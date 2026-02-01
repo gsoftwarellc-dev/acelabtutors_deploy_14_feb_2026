@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Eye, EyeOff, GraduationCap, BookOpen, Users, Shield, ArrowLeft } from "lucide-react"
+import { Eye, EyeOff, GraduationCap, BookOpen, Users, Shield } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 
 export default function RegisterPage() {

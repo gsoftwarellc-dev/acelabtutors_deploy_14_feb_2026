@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Eye, EyeOff, GraduationCap, BookOpen, Users, Shield, ArrowLeft } from "lucide-react"
+import { Eye, EyeOff, GraduationCap, BookOpen, Users, Shield } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 
 export default function LoginPage() {
@@ -134,7 +134,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="text-center text-sm text-slate-500">
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                     <Link href="/register" className="text-primary font-semibold hover:underline">
                         Sign up
                     </Link>

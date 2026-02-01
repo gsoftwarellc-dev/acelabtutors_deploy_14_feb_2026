@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, Search, User as UserIcon, BookOpen, Shield, AlertTriangle, X, CheckCircle, Ban } from "lucide-react"
+import { Plus, BookOpen, X, CheckCircle, Ban } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface User {
@@ -127,7 +127,7 @@ export default function UserManagementPage() {
 
         const method = isEditing ? 'PUT' : 'POST'
 
-        const body: any = { ...formData }
+        const body: Record<string, string | null> = { ...formData }
         if (isEditing && !body.password) delete body.password
 
         try {

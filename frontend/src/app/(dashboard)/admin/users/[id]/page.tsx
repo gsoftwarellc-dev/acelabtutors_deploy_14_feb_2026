@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, User as UserIcon, Mail, Phone, Calendar, Shield, BookOpen, AlertCircle, Edit2, Ban, CheckCircle, Trash2, Smartphone } from "lucide-react"
+import { ArrowLeft, User as UserIcon, Mail, Phone, Calendar, Shield, BookOpen, Ban, CheckCircle, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface User {
@@ -46,8 +46,28 @@ export default function UserProfilePage() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        if (id) fetchUser()
-    }, [id])
+        const fetchUserStable = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const res = await fetch(`${apiUrl}/api/admin/users/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                if (res.ok) {
+                    const data = await res.json()
+                    setUser(data)
+                } else {
+                    router.push('/admin/users')
+                }
+            } catch (error) {
+                console.error(error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        if (id) fetchUserStable()
+    }, [id, router])
 
     const fetchUser = async () => {
         try {

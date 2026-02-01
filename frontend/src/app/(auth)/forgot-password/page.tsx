@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { GraduationCap, BookOpen, Users, Shield, ArrowLeft } from "lucide-react"
+import { GraduationCap, BookOpen, Users, Shield } from "lucide-react"
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("")
