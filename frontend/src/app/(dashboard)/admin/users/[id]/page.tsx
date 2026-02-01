@@ -51,8 +51,9 @@ export default function UserProfilePage() {
 
     const fetchUser = async () => {
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:8000/api/admin/users/${id}`, {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/users/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             if (res.ok) {
@@ -73,8 +74,9 @@ export default function UserProfilePage() {
         if (!confirm(`Are you sure you want to ${user.status === 'active' ? 'suspend' : 'activate'} this user?`)) return
 
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:8000/api/admin/users/${user.id}/toggle-suspend`, {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/users/${user.id}/toggle-suspend`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -91,8 +93,9 @@ export default function UserProfilePage() {
     const handleDelete = async () => {
         if (!user || !confirm("Are you sure you want to delete this user?")) return
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:8000/api/admin/users/${user.id}`, {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/users/${user.id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -127,13 +130,13 @@ export default function UserProfilePage() {
                         <div className="flex items-center gap-4 mb-2">
                             <h1 className="text-3xl font-bold text-slate-900">{user.name}</h1>
                             <span className={`px-2.5 py-0.5 rounded-full text-sm font-medium border capitalize ${user.role === 'student' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                    user.role === 'tutor' ? 'bg-purple-50 text-purple-700 border-purple-200' :
-                                        'bg-slate-50 text-slate-700 border-slate-200'
+                                user.role === 'tutor' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                                    'bg-slate-50 text-slate-700 border-slate-200'
                                 }`}>
                                 {user.role}
                             </span>
                             <span className={`px-2.5 py-0.5 rounded-full text-sm font-medium border capitalize ${user.status === 'active' ? 'bg-green-50 text-green-700 border-green-200' :
-                                    'bg-red-50 text-red-700 border-red-200'
+                                'bg-red-50 text-red-700 border-red-200'
                                 }`}>
                                 {user.status || 'Active'}
                             </span>
@@ -199,8 +202,8 @@ export default function UserProfilePage() {
                                                 <td className="px-6 py-4 text-slate-600">{new Date(enr.enrollment_date).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4">
                                                     <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${enr.status === 'completed' ? 'bg-green-100 text-green-700' :
-                                                            enr.status === 'dropped' ? 'bg-red-100 text-red-700' :
-                                                                'bg-blue-100 text-blue-700'
+                                                        enr.status === 'dropped' ? 'bg-red-100 text-red-700' :
+                                                            'bg-blue-100 text-blue-700'
                                                         }`}>
                                                         {enr.status}
                                                     </span>
@@ -246,8 +249,8 @@ export default function UserProfilePage() {
                                             <td className="px-6 py-4 font-medium text-slate-900">${parseFloat(pay.amount).toFixed(2)}</td>
                                             <td className="px-6 py-4">
                                                 <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${pay.status === 'paid' ? 'bg-green-100 text-green-700' :
-                                                        pay.status === 'refunded' ? 'bg-red-100 text-red-700' :
-                                                            'bg-amber-100 text-amber-700'
+                                                    pay.status === 'refunded' ? 'bg-red-100 text-red-700' :
+                                                        'bg-amber-100 text-amber-700'
                                                     }`}>
                                                     {pay.status}
                                                 </span>

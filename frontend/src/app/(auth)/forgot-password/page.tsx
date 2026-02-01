@@ -25,8 +25,8 @@ export default function ForgotPasswordPage() {
         setLoading(true)
 
         try {
-            // Note: API endpoint might not exist yet on backend
-            const res = await fetch('http://localhost:8000/api/forgot-password', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/forgot-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, role })
@@ -77,8 +77,8 @@ export default function ForgotPasswordPage() {
                                     key={r.id}
                                     onClick={() => setRole(r.id)}
                                     className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-all ${role === r.id
-                                            ? 'border-blue-600 bg-blue-50 text-blue-600 ring-1 ring-blue-600'
-                                            : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50 text-slate-600'
+                                        ? 'border-blue-600 bg-blue-50 text-blue-600 ring-1 ring-blue-600'
+                                        : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50 text-slate-600'
                                         }`}
                                     type="button"
                                 >

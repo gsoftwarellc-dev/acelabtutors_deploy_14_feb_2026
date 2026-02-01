@@ -60,8 +60,9 @@ export default function UserManagementPage() {
 
     const fetchUsers = async () => {
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch('http://localhost:8000/api/admin/users', {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             if (res.ok) {
@@ -77,8 +78,9 @@ export default function UserManagementPage() {
 
     const fetchCourses = async () => {
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch('http://localhost:8000/api/admin/courses', {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/courses`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             if (res.ok) {
@@ -118,9 +120,10 @@ export default function UserManagementPage() {
 
     const handleFormSubmit = async () => {
         const token = localStorage.getItem('token')
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
         const url = isEditing && selectedUser
-            ? `http://localhost:8000/api/admin/users/${selectedUser.id}`
-            : 'http://localhost:8000/api/admin/users'
+            ? `${apiUrl}/api/admin/users/${selectedUser.id}`
+            : `${apiUrl}/api/admin/users`
 
         const method = isEditing ? 'PUT' : 'POST'
 
@@ -159,8 +162,9 @@ export default function UserManagementPage() {
         if (!confirm(`Are you sure you want to ${selectedUser.status === 'active' ? 'suspend' : 'activate'} this user?`)) return
 
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:8000/api/admin/users/${selectedUser.id}/toggle-suspend`, {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/users/${selectedUser.id}/toggle-suspend`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -178,8 +182,9 @@ export default function UserManagementPage() {
         if (!selectedUser || !confirm("Are you sure you want to delete this user? This cannot be undone.")) return
 
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:8000/api/admin/users/${selectedUser.id}`, {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/users/${selectedUser.id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -199,8 +204,9 @@ export default function UserManagementPage() {
         if (!enrollData.course_id) return alert("Please select a course")
 
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:8000/api/admin/users/${selectedUser.id}/enroll`, {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/users/${selectedUser.id}/enroll`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
