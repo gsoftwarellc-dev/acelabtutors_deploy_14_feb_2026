@@ -43,14 +43,7 @@ export default function TeacherDetailPage({ params }: { params: { id: string } }
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Total Hours</h3>
-                        <Clock size={20} />
-                    </div>
-                    <p className="text-3xl font-bold">{teacher.totalHours}h</p>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl p-6 text-white">
                     <div className="flex items-center justify-between mb-2">
                         <h3 className="text-sm font-semibold opacity-90">Students</h3>
@@ -77,10 +70,6 @@ export default function TeacherDetailPage({ params }: { params: { id: string } }
                                 <h4 className="font-semibold text-slate-900">{course.name}</h4>
                                 <p className="text-sm text-slate-500">{course.students} students enrolled</p>
                             </div>
-                            <div className="text-right">
-                                <p className="font-bold text-slate-900">{course.hours}h</p>
-                                <p className="text-xs text-slate-500">taught</p>
-                            </div>
                         </div>
                     ))}
                 </div>
@@ -103,35 +92,6 @@ export default function TeacherDetailPage({ params }: { params: { id: string } }
                             </span>
                         </div>
                     ))}
-                </div>
-            </div>
-
-            {/* Recent Activity */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900">Recent Activity</h2>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b">
-                            <tr>
-                                <th className="px-6 py-3 font-medium text-left">Date</th>
-                                <th className="px-6 py-3 font-medium text-left">Course</th>
-                                <th className="px-6 py-3 font-medium text-left">Student</th>
-                                <th className="px-6 py-3 font-medium text-center">Duration</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                            {teacher.recentActivity.map((activity, idx) => (
-                                <tr key={idx} className="hover:bg-slate-50">
-                                    <td className="px-6 py-4 text-slate-900">{activity.date}</td>
-                                    <td className="px-6 py-4 text-slate-600">{activity.course}</td>
-                                    <td className="px-6 py-4 text-slate-600">{activity.student}</td>
-                                    <td className="px-6 py-4 text-center text-slate-600">{activity.duration}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

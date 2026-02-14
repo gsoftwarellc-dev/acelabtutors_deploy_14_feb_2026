@@ -1,28 +1,41 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import MessagesInterface from "@/components/shared/messages-interface"
-import { MOCK_USERS, MOCK_ENROLLMENTS, MOCK_COURSES, MOCK_TUTORS } from "@/lib/mock-data"
 
 export default function StudentMessagesPage() {
-    const studentId = MOCK_USERS.student.id
-    const enrollments = MOCK_ENROLLMENTS.filter(e => e.studentId === studentId && e.status === "active")
+    const [contacts, setContacts] = useState<any[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
-    // Get unique tutors from enrolled courses
-    const contacts = enrollments.map((enrollment, index) => {
-        const course = MOCK_COURSES.find(c => c.id === enrollment.courseId)
-        const tutor = MOCK_TUTORS.find(t => t.id === course?.tutorId)
+    useEffect(() => {
+        fetchContacts()
+    }, [])
 
-        if (!course || !tutor) return null
-
-        return {
-            id: index + 1, // keeping simple number IDs for the UI interface requirement
-            name: tutor.name,
-            role: `Teacher (${course.name})`,
-            lastMessage: `Welcome to ${course.name}! Let me know if you have questions.`,
-            time: "09:00 AM",
-            unread: 0,
-            online: true
+    const fetchContacts = async () => {
+        try {
+            const token = localStorage.getItem('token')
+            const response = await fetch('http://localhost:8000/api/messages/contacts', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            })
+            if (response.ok) {
+                const data = await response.json()
+                setContacts(data)
+            }
+        } catch (error) {
+            console.error("Failed to fetch contacts", error)
+        } finally {
+            setIsLoading(false)
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    }).filter(Boolean) as any[]
+    }
+
+    if (isLoading) {
+        return <div className="flex justify-center items-center py-20">
+            <div className="text-slate-500">Loading contacts...</div>
+        </div>
+    }
 
     return <MessagesInterface contacts={contacts} />
 }

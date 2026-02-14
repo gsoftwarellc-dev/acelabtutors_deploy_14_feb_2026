@@ -1,16 +1,17 @@
 .DS_Store
-.idea
-.vscode
-*.log
-
-# Frontend (Managed by its own .gitignore)
-frontend/node_modules
-frontend/.next
-frontend/out
-frontend/.env
-frontend/.env.local
-
-# Backend (Managed by its own .gitignore)
-backend/vendor
-backend/node_modules
+node_modules/
+yarn-cache/
+npm-cache/
+.next/
+out/
+.env
+.env.local
+.env.production
+deploy.log
+backend/vendor/
 backend/.env
+backend/storage/*.key
+backend/storage/framework/cache/data/*
+backend/storage/framework/views/*.php
+backend/storage/framework/sessions/*
+backend/storage/logs/*.log

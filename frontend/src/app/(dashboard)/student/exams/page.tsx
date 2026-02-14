@@ -2,56 +2,11 @@ import { FileText, Clock, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function ExamsPage() {
-    const upcomingExams = [
-        {
-            id: 1,
-            subject: "Mathematics",
-            topic: "Algebra & Geometry",
-            date: "Apr 20, 2026",
-            time: "10:00 AM",
-            duration: "2 hours",
-            status: "upcoming"
-        },
-        {
-            id: 2,
-            subject: "Physics",
-            topic: "Quantum Mechanics",
-            date: "Apr 25, 2026",
-            time: "2:00 PM",
-            duration: "1.5 hours",
-            status: "upcoming"
-        }
-    ]
+    // TODO: Fetch from backend API
+    const upcomingExams: any[] = []
 
-    const pastResults = [
-        {
-            id: 1,
-            subject: "Chemistry",
-            topic: "Organic Chemistry",
-            date: "Mar 15, 2026",
-            score: "92%",
-            grade: "A",
-            status: "passed"
-        },
-        {
-            id: 2,
-            subject: "Mathematics",
-            topic: "Calculus",
-            date: "Mar 10, 2026",
-            score: "88%",
-            grade: "A-",
-            status: "passed"
-        },
-        {
-            id: 3,
-            subject: "English Literature",
-            topic: "Shakespearean Analysis",
-            date: "Mar 05, 2026",
-            score: "95%",
-            grade: "A+",
-            status: "passed"
-        }
-    ]
+    // TODO: Fetch from backend API
+    const pastResults: any[] = []
 
     return (
         <div className="space-y-8">
@@ -125,59 +80,39 @@ export default function ExamsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {pastResults.map((result) => (
-                                <tr key={result.id} className="hover:bg-slate-50">
-                                    <td className="px-6 py-4 font-medium text-slate-900">{result.subject}</td>
-                                    <td className="px-6 py-4 text-slate-600">{result.topic}</td>
-                                    <td className="px-6 py-4 text-slate-600">{result.date}</td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className="font-bold text-slate-900">{result.score}</span>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold
-                                            ${result.grade.startsWith('A') ? 'bg-green-100 text-green-700' :
-                                                result.grade.startsWith('B') ? 'bg-blue-100 text-blue-700' :
-                                                    'bg-slate-100 text-slate-700'}`}>
-                                            {result.grade}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                            <CheckCircle size={12} className="mr-1" /> Passed
-                                        </span>
+                            {pastResults.length > 0 ? (
+                                pastResults.map((result) => (
+                                    <tr key={result.id} className="hover:bg-slate-50">
+                                        <td className="px-6 py-4 font-medium text-slate-900">{result.subject}</td>
+                                        <td className="px-6 py-4 text-slate-600">{result.topic}</td>
+                                        <td className="px-6 py-4 text-slate-600">{result.date}</td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className="font-bold text-slate-900">{result.score}</span>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold
+                                                ${result.grade.startsWith('A') ? 'bg-green-100 text-green-700' :
+                                                    result.grade.startsWith('B') ? 'bg-blue-100 text-blue-700' :
+                                                        'bg-slate-100 text-slate-700'}`}>
+                                                {result.grade}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                                <CheckCircle size={12} className="mr-1" /> Passed
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                                        No past exam results available yet.
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
-                </div>
-            </div>
-
-            {/* Statistics Summary */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Average Score</h3>
-                        <CheckCircle size={20} />
-                    </div>
-                    <p className="text-3xl font-bold">91.7%</p>
-                    <p className="text-xs opacity-75 mt-1">Above class average</p>
-                </div>
-                <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Exams Taken</h3>
-                        <FileText size={20} />
-                    </div>
-                    <p className="text-3xl font-bold">{pastResults.length}</p>
-                    <p className="text-xs opacity-75 mt-1">This semester</p>
-                </div>
-                <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Upcoming</h3>
-                        <Clock size={20} />
-                    </div>
-                    <p className="text-3xl font-bold">{upcomingExams.length}</p>
-                    <p className="text-xs opacity-75 mt-1">Next 30 days</p>
                 </div>
             </div>
         </div>

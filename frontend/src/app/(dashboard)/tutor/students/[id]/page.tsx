@@ -96,12 +96,7 @@ export default function TutorStudentDetailPage() {
                         </div>
                     </div>
                     <div className="flex space-x-3">
-                        <Link href="/tutor/messages">
-                            <Button className="space-x-2">
-                                <MessageSquare size={16} />
-                                <span>Message Student</span>
-                            </Button>
-                        </Link>
+
                     </div>
                 </div>
             </div>

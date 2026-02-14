@@ -1,119 +1,183 @@
-import { DollarSign, TrendingUp, Calendar, CreditCard } from "lucide-react"
+"use client"
+
+import { useState, useEffect } from "react"
+import { DollarSign, TrendingUp, Calendar, Loader2, ArrowDownRight, Banknote, CreditCard, Receipt } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+
+interface Transaction {
+    id: number
+    amount: string
+    method: string
+    reference: string | null
+    note: string | null
+    payment_date: string
+    created_at: string
+    paid_by_admin?: {
+        id: number
+        name: string
+    } | null
+}
 
 export default function TutorEarningsPage() {
-    const earningsData = {
-        totalEarnings: "$12,450",
-        thisMonth: "$3,250",
-        lastMonth: "$2,890",
-        pendingPayment: "$1,150"
+    const [loading, setLoading] = useState(true)
+    const [stats, setStats] = useState({
+        total: 0,
+        this_month: 0,
+        last_month: 0,
+    })
+    const [transactions, setTransactions] = useState<Transaction[]>([])
+
+    useEffect(() => {
+        fetchEarnings()
+    }, [])
+
+    const fetchEarnings = async () => {
+        try {
+            const token = localStorage.getItem('token')
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/tutor/earnings`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            if (res.ok) {
+                const data = await res.json()
+                setStats(data.stats)
+                setTransactions(data.transactions.data || [])
+            }
+        } catch (error) {
+            console.error("Failed to fetch earnings:", error)
+        } finally {
+            setLoading(false)
+        }
     }
 
-    const recentEarnings = [
-        { id: 1, student: "Alex Johnson", subject: "Mathematics", date: "Mar 15, 2026", duration: "1h", amount: "$50" },
-        { id: 2, student: "Sarah Martinez", subject: "Physics", date: "Mar 14, 2026", duration: "1.5h", amount: "$75" },
-        { id: 3, student: "Alex Johnson", subject: "Physics", date: "Mar 12, 2026", duration: "1h", amount: "$50" },
-        { id: 4, student: "Emily Brown", subject: "Chemistry", date: "Mar 10, 2026", duration: "1h", amount: "$50" },
-        { id: 5, student: "Michael Lee", subject: "Mathematics", date: "Mar 08, 2026", duration: "2h", amount: "$100" },
-    ]
+    const formatCurrency = (amount: number) => {
+        return `£${amount.toFixed(2)}`
+    }
 
-    const monthlyBreakdown = [
-        { month: "January", earnings: "$2,450", classes: 35 },
-        { month: "February", earnings: "$2,890", classes: 42 },
-        { month: "March", earnings: "$3,250", classes: 48 },
-    ]
+    const formatDate = (dateStr: string) => {
+        return new Date(dateStr).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+        })
+    }
+
+    const getMethodBadge = (method: string) => {
+        const styles: Record<string, { label: string; className: string }> = {
+            bank_transfer: { label: 'Bank Transfer', className: 'bg-blue-100 text-blue-700 border-blue-200' },
+            cash: { label: 'Cash', className: 'bg-green-100 text-green-700 border-green-200' },
+            cheque: { label: 'Cheque', className: 'bg-amber-100 text-amber-700 border-amber-200' },
+            other: { label: 'Other', className: 'bg-slate-100 text-slate-700 border-slate-200' },
+        }
+        const style = styles[method] || styles.other
+        return <Badge variant="outline" className={style.className}>{style.label}</Badge>
+    }
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-96">
+                <Loader2 className="animate-spin text-slate-400" size={32} />
+            </div>
+        )
+    }
 
     return (
         <div className="space-y-8">
+            {/* Header */}
             <div>
                 <h1 className="text-3xl font-bold text-slate-900 mb-2">Earnings</h1>
-                <p className="text-slate-600">Track your income and payment history</p>
+                <p className="text-slate-600">Track your payment history</p>
             </div>
 
             {/* Earnings Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl p-6 text-white shadow-lg shadow-indigo-500/20">
                     <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Total Earnings</h3>
+                        <h3 className="text-sm font-semibold opacity-90">Total Received</h3>
                         <DollarSign size={20} />
                     </div>
-                    <p className="text-3xl font-bold">{earningsData.totalEarnings}</p>
+                    <p className="text-3xl font-bold">{formatCurrency(stats.total)}</p>
                     <p className="text-xs opacity-75 mt-1">All time</p>
                 </div>
-                <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl p-6 text-white">
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-6 text-white shadow-lg shadow-emerald-500/20">
                     <div className="flex items-center justify-between mb-2">
                         <h3 className="text-sm font-semibold opacity-90">This Month</h3>
                         <TrendingUp size={20} />
                     </div>
-                    <p className="text-3xl font-bold">{earningsData.thisMonth}</p>
-                    <p className="text-xs opacity-75 mt-1">+12% from last month</p>
+                    <p className="text-3xl font-bold">{formatCurrency(stats.this_month)}</p>
+                    <p className="text-xs opacity-75 mt-1">{new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</p>
                 </div>
-                <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-6 text-white">
+                <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-6 text-white shadow-lg shadow-amber-500/20">
                     <div className="flex items-center justify-between mb-2">
                         <h3 className="text-sm font-semibold opacity-90">Last Month</h3>
                         <Calendar size={20} />
                     </div>
-                    <p className="text-3xl font-bold">{earningsData.lastMonth}</p>
-                    <p className="text-xs opacity-75 mt-1">February 2026</p>
-                </div>
-                <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Pending</h3>
-                        <CreditCard size={20} />
-                    </div>
-                    <p className="text-3xl font-bold">{earningsData.pendingPayment}</p>
-                    <p className="text-xs opacity-75 mt-1">Processing</p>
+                    <p className="text-3xl font-bold">{formatCurrency(stats.last_month)}</p>
+                    <p className="text-xs opacity-75 mt-1">
+                        {new Date(new Date().setMonth(new Date().getMonth() - 1)).toLocaleString('default', { month: 'long', year: 'numeric' })}
+                    </p>
                 </div>
             </div>
 
-            {/* Recent Earnings Table */}
+            {/* Transaction History */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900">Recent Earnings</h2>
+                <div className="p-5 border-b border-slate-100">
+                    <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                        <Receipt size={20} className="text-slate-400" />
+                        Transaction History
+                    </h2>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b">
-                            <tr>
-                                <th className="px-6 py-3 font-medium text-left">Student</th>
-                                <th className="px-6 py-3 font-medium text-left">Subject</th>
-                                <th className="px-6 py-3 font-medium text-left">Date</th>
-                                <th className="px-6 py-3 font-medium text-center">Duration</th>
-                                <th className="px-6 py-3 font-medium text-right">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                            {recentEarnings.map((earning) => (
-                                <tr key={earning.id} className="hover:bg-slate-50">
-                                    <td className="px-6 py-4 font-medium text-slate-900">{earning.student}</td>
-                                    <td className="px-6 py-4 text-slate-600">{earning.subject}</td>
-                                    <td className="px-6 py-4 text-slate-600">{earning.date}</td>
-                                    <td className="px-6 py-4 text-center text-slate-600">{earning.duration}</td>
-                                    <td className="px-6 py-4 text-right">
-                                        <span className="font-bold text-green-600">{earning.amount}</span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            {/* Monthly Breakdown */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
-                <h2 className="text-xl font-bold text-slate-900 mb-4">Monthly Breakdown</h2>
-                <div className="space-y-4">
-                    {monthlyBreakdown.map((month, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                            <div>
-                                <h4 className="font-semibold text-slate-900">{month.month}</h4>
-                                <p className="text-sm text-slate-500">{month.classes} classes</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-2xl font-bold text-slate-900">{month.earnings}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                {transactions.length === 0 ? (
+                    <div className="p-12 text-center">
+                        <Banknote size={40} className="text-slate-300 mx-auto mb-3" />
+                        <p className="text-slate-500 font-medium">No transactions yet</p>
+                        <p className="text-slate-400 text-sm mt-1">Payment records will appear here once admin processes payments.</p>
+                    </div>
+                ) : (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead>Method</TableHead>
+                                <TableHead>Reference</TableHead>
+                                <TableHead>Note</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {transactions.map((txn) => (
+                                <TableRow key={txn.id}>
+                                    <TableCell className="font-medium">
+                                        {formatDate(txn.payment_date)}
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="font-semibold text-emerald-600">
+                                            +{formatCurrency(parseFloat(txn.amount))}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        {getMethodBadge(txn.method)}
+                                    </TableCell>
+                                    <TableCell className="text-slate-500 text-sm">
+                                        {txn.reference || '—'}
+                                    </TableCell>
+                                    <TableCell className="text-slate-500 text-sm max-w-[200px] truncate">
+                                        {txn.note || '—'}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                )}
             </div>
         </div>
     )

@@ -1,17 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useAuth } from "@/context/auth-context"
 import { Camera, Calendar, Edit2, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function ProfilePage() {
+    const { user, updateUser } = useAuth()
     const [isEditing, setIsEditing] = useState(false)
     const [profileData, setProfileData] = useState({
-        name: "Alex Johnson",
-        joinDate: "January 2025",
-        bio: "Passionate about mathematics and science. Currently preparing for university entrance exams and looking to excel in calculus and physics.",
-        avatar: "/logo.png" // Default avatar
+        name: user?.name || "",
+        email: user?.email || "",
+        phone: user?.phone || "",
+        joinDate: user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "",
+        bio: user?.bio || "",
+        avatar: user?.avatar ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${user.avatar}` : "",
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
     })
+
+    useEffect(() => {
+        if (user) {
+            setProfileData(prev => ({
+                ...prev,
+                name: user.name,
+                email: user.email,
+                phone: user.phone || "",
+                joinDate: user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "",
+                bio: user.bio || "",
+                avatar: user.avatar ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${user.avatar}` : ""
+            }))
+        }
+    }, [user])
 
     const handleSave = () => {
         setIsEditing(false)
@@ -19,15 +40,54 @@ export default function ProfilePage() {
         console.log("Profile saved:", profileData)
     }
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                setProfileData({ ...profileData, avatar: reader.result as string })
+            console.log("Uploading file:", file.name, file.type, file.size)
+            const formData = new FormData()
+            formData.append('avatar', file)
+
+            try {
+                const token = localStorage.getItem('token')
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+                const response = await fetch(`${apiUrl}/api/user/avatar`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                })
+
+                if (response.ok) {
+                    const data = await response.json()
+                    const avatarUrl = `${apiUrl}${data.avatar_url}`
+                    setProfileData({ ...profileData, avatar: avatarUrl })
+
+                    // Update global user context
+                    if (user) {
+                        const updatedUser = { ...user, avatar: data.avatar_url }
+                        updateUser(updatedUser)
+                    }
+                    alert("Profile picture updated successfully!")
+                } else {
+                    const errorData = await response.json()
+                    alert(errorData.message || "Failed to upload avatar")
+                    console.error("Failed to upload avatar:", errorData)
+                }
+            } catch (error) {
+                console.error("Error uploading avatar:", error)
             }
-            reader.readAsDataURL(file)
         }
+    }
+
+    const getInitials = (name: string) => {
+        return name
+            .split(' ')
+            .map(part => part[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2)
     }
 
     return (
@@ -59,12 +119,18 @@ export default function ProfilePage() {
                     <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
                         <div className="flex flex-col items-center">
                             <div className="relative">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={profileData.avatar}
-                                    alt="Profile"
-                                    className="w-32 h-32 rounded-full object-cover border-4 border-slate-100"
-                                />
+                                {profileData.avatar && profileData.avatar !== "/logo.png" ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                        src={profileData.avatar}
+                                        alt="Profile"
+                                        className="w-32 h-32 rounded-full object-cover border-4 border-slate-100"
+                                    />
+                                ) : (
+                                    <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center border-4 border-slate-100 text-primary text-3xl font-bold">
+                                        {getInitials(profileData.name)}
+                                    </div>
+                                )}
                                 {isEditing && (
                                     <label className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary/90 transition-colors">
                                         <Camera size={18} />
@@ -78,7 +144,7 @@ export default function ProfilePage() {
                                 )}
                             </div>
                             <h2 className="text-xl font-bold text-slate-900 mt-4">{profileData.name}</h2>
-                            <p className="text-sm text-slate-500">Student</p>
+                            <p className="text-sm text-slate-500 capitalize">{user?.role || 'Student'}</p>
                             <div className="mt-4 w-full space-y-3">
                                 <div className="flex items-center text-sm text-slate-600">
                                     <Calendar size={16} className="mr-2 text-slate-400" />
@@ -111,44 +177,86 @@ export default function ProfilePage() {
                                 )}
                             </div>
 
-
-                        </div>
-                    </div>
-
-                    {/* Bio Section */}
-                    <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
-                        <h3 className="text-lg font-bold text-slate-900 mb-4">About Me</h3>
-                        {isEditing ? (
-                            <textarea
-                                value={profileData.bio}
-                                onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
-                                rows={5}
-                                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                                placeholder="Tell us about yourself, your goals, and interests..."
-                            />
-                        ) : (
-                            <p className="text-slate-600 leading-relaxed">{profileData.bio}</p>
-                        )}
-                    </div>
-
-                    {/* Academic Information */}
-                    <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
-                        <h3 className="text-lg font-bold text-slate-900 mb-4">Academic Stats</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            <div className="text-center p-4 bg-blue-50 rounded-lg">
-                                <div className="text-2xl font-bold text-blue-600">48</div>
-                                <div className="text-xs text-slate-600 mt-1">Total Classes</div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Email Address
+                                </label>
+                                {isEditing ? (
+                                    <input
+                                        type="email"
+                                        value={profileData.email}
+                                        onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    />
+                                ) : (
+                                    <p className="text-slate-900">{profileData.email}</p>
+                                )}
                             </div>
-                            <div className="text-center p-4 bg-green-50 rounded-lg">
-                                <div className="text-2xl font-bold text-green-600">98%</div>
-                                <div className="text-xs text-slate-600 mt-1">Attendance</div>
-                            </div>
-                            <div className="text-center p-4 bg-purple-50 rounded-lg">
-                                <div className="text-2xl font-bold text-purple-600">91.7%</div>
-                                <div className="text-xs text-slate-600 mt-1">Avg. Score</div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Phone Number
+                                </label>
+                                {isEditing ? (
+                                    <input
+                                        type="tel"
+                                        value={profileData.phone}
+                                        onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    />
+                                ) : (
+                                    <p className="text-slate-900">{profileData.phone}</p>
+                                )}
                             </div>
                         </div>
                     </div>
+
+                    {/* Change Password Section - Only shown when editing */}
+                    {isEditing && (
+                        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
+                            <h3 className="text-lg font-bold text-slate-900 mb-4">Change Password</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        Current Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        value={profileData.currentPassword}
+                                        onChange={(e) => setProfileData({ ...profileData, currentPassword: e.target.value })}
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        placeholder="Enter current password"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        New Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        value={profileData.newPassword}
+                                        onChange={(e) => setProfileData({ ...profileData, newPassword: e.target.value })}
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        placeholder="Enter new password"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        Confirm New Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        value={profileData.confirmPassword}
+                                        onChange={(e) => setProfileData({ ...profileData, confirmPassword: e.target.value })}
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        placeholder="Confirm new password"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+
                 </div>
             </div>
         </div>

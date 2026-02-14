@@ -15,6 +15,9 @@ class Enrollment extends Model
         'progress',
         'grade',
         'attendance',
+        'payment_id',
+        'amount_paid',
+        'currency'
     ];
 
     public function student(): BelongsTo

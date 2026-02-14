@@ -1,50 +1,42 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import MessagesInterface from "@/components/shared/messages-interface"
+import { useState } from "react"
+import ChatSidebar from "@/components/dashboard/messaging/ChatSidebar"
+import ChatWindow from "@/components/dashboard/messaging/ChatWindow"
 
 interface Contact {
     id: number
     name: string
+    email: string
     role: string
-    avatar?: string
-    lastMessage: string
-    time: string
-    unread: number
-    online: boolean
+    type: 'admin' | 'student'
 }
 
-export default function TutorMessagesPage() {
-    const [contacts, setContacts] = useState<Contact[]>([])
-    const [loading, setLoading] = useState(true)
+export default function MessagesPage() {
+    const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
 
-    useEffect(() => {
-        const fetchContacts = async () => {
-            try {
-                const res = await fetch('http://127.0.0.1:8000/api/messages/contacts')
-                if (res.ok) {
-                    const data = await res.json()
-                    setContacts(data)
-                }
-            } catch (error) {
-                console.error("Failed to load contacts", error)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchContacts()
-    }, [])
+    return (
+        <div className="h-[calc(100vh-2rem)] border rounded-xl overflow-hidden bg-white shadow-sm flex">
+            <ChatSidebar
+                onSelectContact={setSelectedContact}
+                selectedContactId={selectedContact?.id}
+            />
 
-    if (loading) return <div className="p-12 text-center text-slate-500">Loading chats...</div>
-
-    if (contacts.length === 0) {
-        return (
-            <div className="p-12 text-center text-slate-500">
-                <h3 className="text-lg font-bold text-slate-800">No Messages Yet</h3>
-                <p>Start a conversation from your Student List.</p>
-            </div>
-        )
-    }
-
-    return <MessagesInterface contacts={contacts} />
+            <main className="flex-1 flex flex-col">
+                {selectedContact ? (
+                    <ChatWindow contact={selectedContact} />
+                ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground bg-slate-50/30">
+                        <div className="h-16 w-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+                            <span className="text-4xl">👋</span>
+                        </div>
+                        <h3 className="text-xl font-semibold text-slate-900">Welcome to Messages</h3>
+                        <p className="mt-2 text-center max-w-sm">
+                            Select a student or an admin from the sidebar to start messaging.
+                        </p>
+                    </div>
+                )}
+            </main>
+        </div>
+    )
 }

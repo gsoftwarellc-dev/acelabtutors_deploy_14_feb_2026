@@ -30,6 +30,9 @@ class User extends Authenticatable
         'phone',
         'status',
         'rating',
+        'avatar',
+        'stripe_account_id',
+        'stripe_boarding_completed',
     ];
 
     protected $hidden = [

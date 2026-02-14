@@ -116,9 +116,7 @@ export function TutorProfileClient({ tutor }: TutorProfileClientProps) {
               <Button className="w-full h-12 text-lg" onClick={() => setIsBookingOpen(true)}>
                 Book a Session
               </Button>
-              <Button variant="outline" className="w-full">
-                Message Tutor
-              </Button>
+
             </div>
 
             <p className="text-xs text-slate-400 text-center mt-4">

@@ -1,14 +1,12 @@
-import { MOCK_SESSIONS } from "@/lib/mock-data"
 import { Calendar, Clock, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function SchedulePage() {
-    const upcomingClasses = MOCK_SESSIONS.filter(s => s.studentName === "Alex Johnson" && s.status === "scheduled")
+    // TODO: Fetch from backend API
+    const upcomingClasses: any[] = []
 
-    const upcomingExams = [
-        { id: 1, subject: "Mathematics", topic: "Algebra & Geometry", date: "Apr 20, 2026", time: "10:00 AM", duration: "2h" },
-        { id: 2, subject: "Physics", topic: "Quantum Mechanics", date: "Apr 25, 2026", time: "2:00 PM", duration: "1.5h" },
-    ]
+    // TODO: Fetch from backend API
+    const upcomingExams: any[] = []
 
     return (
         <div className="space-y-8">
@@ -103,28 +101,6 @@ export default function SchedulePage() {
                             <p>No upcoming exams scheduled</p>
                         </div>
                     )}
-                </div>
-            </div>
-
-            {/* Weekly Calendar View (Optional Enhancement) */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
-                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center">
-                    <Calendar className="mr-2 text-primary" size={20} />
-                    This Week at a Glance
-                </h3>
-                <div className="grid grid-cols-7 gap-2">
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
-                        <div key={day} className="text-center">
-                            <div className="text-xs font-semibold text-slate-500 mb-2">{day}</div>
-                            <div className={`h-20 rounded-lg ${index === 1 ? 'bg-blue-100 border-2 border-blue-500' : 'bg-slate-50'} flex items-center justify-center`}>
-                                {index === 1 && (
-                                    <div className="text-xs">
-                                        <div className="font-bold text-blue-700">2 classes</div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    ))}
                 </div>
             </div>
         </div>

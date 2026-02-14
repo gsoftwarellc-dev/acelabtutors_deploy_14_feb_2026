@@ -10,7 +10,7 @@ export default function LoginPage() {
     const [role, setRole] = useState("student")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(true)
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
 
@@ -18,7 +18,6 @@ export default function LoginPage() {
         { id: 'student', label: 'Student', icon: GraduationCap },
         { id: 'tutor', label: 'Tutor', icon: BookOpen },
         { id: 'parent', label: 'Parent', icon: Users },
-        { id: 'admin', label: 'Admin', icon: Shield },
     ]
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -66,7 +65,7 @@ export default function LoginPage() {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">Select Role</label>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div className="grid grid-cols-3 gap-2">
                             {roles.map((r) => (
                                 <button
                                     key={r.id}

@@ -7,11 +7,7 @@ import Link from "next/link"
 export default function TeacherPerformancePage() {
     const [searchTerm, setSearchTerm] = useState("")
 
-    const teachers = [
-        { id: 1, name: "Dr. Emily Chen", email: "emily@acelab.com", courses: 2, students: 15, totalHours: 145 },
-        { id: 2, name: "James Wilson", email: "james@acelab.com", courses: 1, students: 8, totalHours: 98 },
-        { id: 3, name: "Sarah Davis", email: "sarah@acelab.com", courses: 1, students: 6, totalHours: 72 },
-    ]
+    const teachers: any[] = []
 
     const filteredTeachers = teachers.filter(teacher =>
         teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -47,7 +43,6 @@ export default function TeacherPerformancePage() {
                                 <th className="px-6 py-3 font-medium text-left">Email</th>
                                 <th className="px-6 py-3 font-medium text-center">Courses</th>
                                 <th className="px-6 py-3 font-medium text-center">Students</th>
-                                <th className="px-6 py-3 font-medium text-center">Total Hours</th>
                                 <th className="px-6 py-3 font-medium text-center">Action</th>
                             </tr>
                         </thead>
@@ -58,7 +53,6 @@ export default function TeacherPerformancePage() {
                                     <td className="px-6 py-4 text-slate-600">{teacher.email}</td>
                                     <td className="px-6 py-4 text-center text-slate-600">{teacher.courses}</td>
                                     <td className="px-6 py-4 text-center text-slate-600">{teacher.students}</td>
-                                    <td className="px-6 py-4 text-center text-slate-600">{teacher.totalHours}h</td>
                                     <td className="px-6 py-4 text-center">
                                         <Link href={`/admin/performance/teachers/${teacher.id}`}>
                                             <button className="inline-flex items-center text-primary hover:text-primary/80 font-medium">

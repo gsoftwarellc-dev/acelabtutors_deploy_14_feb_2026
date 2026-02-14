@@ -1,6 +1,7 @@
 "use client"
 
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export function HowItWorks() {
     const steps = [
@@ -87,14 +88,16 @@ export function HowItWorks() {
 
                 {/* Bottom CTA */}
                 <div className="mt-20 text-center">
-                    <button className="group relative px-10 py-5 bg-gradient-to-r from-primary via-purple-600 to-secondary text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-primary/50 transition-all duration-300 hover:scale-105 overflow-hidden">
-                        <span className="relative z-10 flex items-center gap-2">
-                            Start Your Journey Today
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                        {/* Animated Shine */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    </button>
+                    <Link href="/register">
+                        <button className="group relative px-10 py-5 bg-gradient-to-r from-primary via-purple-600 to-secondary text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-primary/50 transition-all duration-300 hover:scale-105 overflow-hidden">
+                            <span className="relative z-10 flex items-center gap-2">
+                                Start Your Journey Today
+                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </span>
+                            {/* Animated Shine */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        </button>
+                    </Link>
                 </div>
             </div>
         </section>

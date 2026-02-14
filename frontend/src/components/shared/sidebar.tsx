@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useAuth } from "@/context/auth-context"
 import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react"
 import {
     LayoutDashboard,
     Calendar,
@@ -13,7 +14,14 @@ import {
     CreditCard,
     FileText,
     User,
-    MessageSquare
+    MessageSquare,
+    SlidersHorizontal,
+    Filter,
+    Globe,
+    Contact,
+    BookCopy,
+    BarChart,
+    History
 } from "lucide-react"
 
 interface SidebarProps {
@@ -23,38 +31,69 @@ interface SidebarProps {
 export function Sidebar({ role }: SidebarProps) {
     const pathname = usePathname()
     const { logout } = useAuth()
+    const [unreadCount, setUnreadCount] = useState(0)
+
+    useEffect(() => {
+        fetchUnreadCount()
+        // Poll every 30 seconds for new messages
+        const interval = setInterval(fetchUnreadCount, 30000)
+        return () => clearInterval(interval)
+    }, [])
+
+    const fetchUnreadCount = async () => {
+        try {
+            const token = localStorage.getItem('token')
+            if (!token) return
+
+            const res = await fetch('http://localhost:8000/api/messages/unread-count', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            })
+            if (res.ok) {
+                const data = await res.json()
+                setUnreadCount(data.unread_count)
+            }
+        } catch (error) {
+            console.error('Failed to fetch unread count', error)
+        }
+    }
 
     const links = {
         student: [
             { href: "/student", label: "Dashboard", icon: LayoutDashboard },
-            { href: "/student/schedule", label: "My Schedule", icon: Calendar },
-
+            { href: "/student/courses", label: "My Courses", icon: BookOpen },
             { href: "/student/exams", label: "Exams & Result", icon: FileText },
-            { href: "/student/resources", label: "Resources", icon: BookOpen },
             { href: "/student/messages", label: "Messages", icon: MessageSquare },
             { href: "/student/profile", label: "Profile", icon: User },
         ],
         parent: [
             { href: "/parent", label: "Overview", icon: LayoutDashboard },
-            { href: "/parent/children", label: "Children", icon: Users },
             { href: "/parent/messages", label: "Messages", icon: MessageSquare },
-            { href: "/parent/billing", label: "Billing", icon: CreditCard },
-            { href: "/parent/reports", label: "Progress Reports", icon: FileText },
+            { href: "/parent/profile", label: "Profile", icon: User },
         ],
         tutor: [
             { href: "/tutor", label: "Dashboard", icon: LayoutDashboard },
-            { href: "/tutor/schedule", label: "My Schedule", icon: Calendar },
-            { href: "/tutor/students", label: "My Students", icon: Users },
             { href: "/tutor/courses", label: "Courses", icon: BookOpen },
+            { href: "/tutor/attendance-history", label: "Attendance History", icon: History },
             { href: "/tutor/messages", label: "Messages", icon: MessageSquare },
             { href: "/tutor/earnings", label: "Earnings", icon: CreditCard },
+            { href: "/tutor/profile", label: "Profile", icon: User },
         ],
         admin: [
             { href: "/admin", label: "Overview", icon: LayoutDashboard },
-            { href: "/admin/performance", label: "View Performance", icon: FileText },
             { href: "/admin/users", label: "User Management", icon: Users },
             { href: "/admin/messages", label: "Messages", icon: MessageSquare },
+            { href: "/admin/contacts", label: "Contacts", icon: Contact },
             { href: "/admin/finance", label: "Finance", icon: CreditCard },
+            { href: "/admin/approvals", label: "Course Approvals", icon: BookOpen },
+            { href: "/admin/courses/control", label: "Control Courses", icon: SlidersHorizontal },
+            { href: "/admin/registrations", label: "Registrations", icon: History },
+            { href: "/admin/enrollment", label: "Course Enrollment", icon: BookCopy },
+            { href: "/admin/filters", label: "Manage Filters", icon: Filter },
+            { href: "/admin/performance", label: "Performance", icon: BarChart },
+            { href: "/admin/profile", label: "Profile", icon: User },
         ]
     }
 
@@ -63,12 +102,9 @@ export function Sidebar({ role }: SidebarProps) {
     return (
         <div className="w-64 bg-white border-r h-screen hidden md:flex flex-col fixed left-0 top-0">
             <div className="p-6 border-b">
-                <Link href="/" className="flex items-center space-x-2">
+                <Link href="/" className="flex items-center justify-center w-full">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/logo.png" alt="Acelab" className="h-8 w-auto object-contain" />
-                    <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                        Acelab
-                    </span>
+                    <img src="/logo_main.png" alt="Acelab" className="h-20 w-auto object-contain" />
                 </Link>
             </div>
 
@@ -90,6 +126,11 @@ export function Sidebar({ role }: SidebarProps) {
                         >
                             <Icon size={18} />
                             <span>{link.label}</span>
+                            {link.label === "Messages" && unreadCount > 0 && (
+                                <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center">
+                                    {unreadCount}
+                                </span>
+                            )}
                         </Link>
                     )
                 })}

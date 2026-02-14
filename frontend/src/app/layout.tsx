@@ -10,6 +10,10 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/context/auth-context";
+import { CartProvider } from "@/context/cart-context";
+import { CartSheet } from "@/components/shared/cart-sheet";
+
+import { Footer } from "@/components/layout/footer";
 
 export default function RootLayout({
   children,
@@ -20,7 +24,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
-          {children}
+          <CartProvider>
+            {children}
+            <Footer />
+            <CartSheet />
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

@@ -13,27 +13,15 @@ export default function RegisterPage() {
     const [role, setRole] = useState("student") // Default role selected
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(true)
 
-    const roles = [
+
+    const signupRoles = [
         { id: 'student', label: 'Student', icon: GraduationCap },
         { id: 'tutor', label: 'Tutor', icon: BookOpen },
         { id: 'parent', label: 'Parent', icon: Users },
-        // Admin registration usually restricted, but keeping consistency with login or could omit if self-reg not allowed
     ]
 
-    // Removing Admin from self-registration if desired, but user asked for consistency "same for signup"
-    // Assuming self-signup for admin might be restricted by backend, but UI wise we can show it or maybe not?
-    // User request: "same for signup". I will include it but it might fail on backend if not handled.
-    // Actually, usually you don't sign up as Admin. But to follow user's specific instruction "same for signup", I'll include it.
-    // Wait, let's stick to the 3 main ones for signup unless user specifically asks for Admin signup. 
-    // The prompt said: "make as if so when someone want to login firstly , they must selete their role like studnet , tutor poarets, admin... same for signup"
-    // I will include Admin in the list to be safe with the "same for signup" request.
-
-    const signupRoles = [
-        ...roles,
-        { id: 'admin', label: 'Admin', icon: Shield }
-    ]
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -80,7 +68,7 @@ export default function RegisterPage() {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">I am a...</label>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div className="grid grid-cols-3 gap-2">
                             {signupRoles.map((r) => (
                                 <button
                                     key={r.id}

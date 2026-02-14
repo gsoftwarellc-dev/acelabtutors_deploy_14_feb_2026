@@ -15,10 +15,14 @@ export default function TutorSchedulePage() {
         zoomLink: ""
     })
 
-    const upcomingClasses = [
-        { id: 1, subject: "Mathematics", student: "Alex Johnson", date: "Mar 18, 2026", time: "10:00 AM", duration: "1h", zoomLink: "https://zoom.us/j/123456789" },
-        { id: 2, subject: "Physics", student: "Alex Johnson", date: "Mar 18, 2026", time: "1:00 PM", duration: "1.5h", zoomLink: "https://zoom.us/j/987654321" },
-    ]
+    const upcomingClasses: Array<{
+        id: number
+        courseName: string
+        date: string
+        time: string
+        duration: string
+        zoomLink: string
+    }> = []
 
     const handleCreateClass = () => {
         console.log("Creating new class:", newClass)
@@ -56,8 +60,7 @@ export default function TutorSchedulePage() {
                                     <span className="text-lg font-bold leading-none">{new Date(classItem.date).getDate()}</span>
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="font-bold text-slate-900 text-lg">{classItem.subject}</h4>
-                                    <p className="text-sm text-slate-500">with {classItem.student}</p>
+                                    <h4 className="font-bold text-slate-900 text-lg">{classItem.courseName}</h4>
                                     <div className="flex items-center gap-4 mt-2">
                                         <span className="flex items-center text-sm font-medium text-slate-600">
                                             <Clock size={14} className="mr-1 text-slate-400" /> {classItem.time}

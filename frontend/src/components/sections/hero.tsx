@@ -35,9 +35,10 @@ export function Hero() {
             <div className="container relative mx-auto px-4 text-center">
                 <div className="mx-auto max-w-4xl space-y-8">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 via-purple-500/10 to-secondary/10 border border-primary/20 backdrop-blur-sm animate-fade-in-up">
+                    {/* Badge */}
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-primary/20 backdrop-blur-sm shadow-sm animate-fade-in-up">
                         <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-                        <span className="text-sm font-semibold bg-gradient-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent">
+                        <span className="text-sm font-bold text-primary">
                             #1 Rated Tutoring Platform 2026
                         </span>
                     </div>
@@ -62,7 +63,7 @@ export function Hero() {
 
                     {/* CTA Buttons */}
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up animation-delay-600">
-                        <Link href="/register" className="w-full sm:w-auto">
+                        <Link href="/courses" className="w-full sm:w-auto">
                             <Button
                                 size="lg"
                                 className="group relative w-full text-lg px-8 py-6 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 shadow-lg hover:shadow-xl hover:shadow-primary/50 transition-all duration-300 hover:scale-105"
@@ -74,7 +75,7 @@ export function Hero() {
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-md"></div>
                             </Button>
                         </Link>
-                        <Link href="#testimonials" className="w-full sm:w-auto">
+                        <Link href="/contact" className="w-full sm:w-auto">
                             <Button
                                 variant="outline"
                                 size="lg"

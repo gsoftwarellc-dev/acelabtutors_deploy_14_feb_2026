@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, User as UserIcon, Mail, Phone, Calendar, Shield, BookOpen, Ban, CheckCircle, Trash2 } from "lucide-react"
+import { ArrowLeft, User as UserIcon, Mail, Phone, Calendar, Shield, BookOpen, Ban, CheckCircle, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface User {
@@ -15,6 +15,7 @@ interface User {
     created_at: string
     enrollments: Enrollment[]
     payments: Payment[]
+    courses: Course[]
 }
 
 interface Enrollment {
@@ -37,13 +38,29 @@ interface Payment {
     payment_date: string
 }
 
+interface Course {
+    id: number
+    name: string
+    level: string
+}
+
 export default function UserProfilePage() {
     const params = useParams()
     const router = useRouter()
     const { id } = params
 
     const [user, setUser] = useState<User | null>(null)
+    const [courses, setCourses] = useState<Course[]>([])
     const [loading, setLoading] = useState(true)
+    const [showEnrollModal, setShowEnrollModal] = useState(false)
+    const [enrollData, setEnrollData] = useState({
+        course_id: "",
+        grade: ""
+    })
+
+    // Delete Course Modal State
+    const [showDeleteCourseModal, setShowDeleteCourseModal] = useState(false)
+    const [courseToDelete, setCourseToDelete] = useState<number | null>(null)
 
     useEffect(() => {
         const fetchUserStable = async () => {
@@ -58,6 +75,15 @@ export default function UserProfilePage() {
                     setUser(data)
                 } else {
                     router.push('/admin/users')
+                }
+
+                // Fetch courses for enrollment dropdown
+                const coursesRes = await fetch(`${apiUrl}/api/admin/courses`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                if (coursesRes.ok) {
+                    const coursesData = await coursesRes.json()
+                    setCourses(coursesData)
                 }
             } catch (error) {
                 console.error(error)
@@ -127,6 +153,60 @@ export default function UserProfilePage() {
         }
     }
 
+    const handleEnrollSubmit = async () => {
+        if (!user) return
+        if (!enrollData.course_id) return alert("Please select a course")
+
+        try {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/users/${user.id}/enroll`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(enrollData)
+            })
+
+            if (res.ok) {
+                alert("Student successfully enrolled!")
+                setShowEnrollModal(false)
+                setEnrollData({ course_id: "", grade: "" })
+                fetchUser() // Refresh user data to show new enrollment
+            } else {
+                const err = await res.json()
+                alert(err.message || "Enrollment failed")
+            }
+        } catch (error) {
+            console.error("Failed to enroll", error)
+        }
+    }
+
+    const handleDeleteCourseClick = (courseId: number) => {
+        setCourseToDelete(courseId)
+        setShowDeleteCourseModal(true)
+    }
+
+    const confirmDeleteCourse = async () => {
+        if (!courseToDelete) return
+        try {
+            const token = localStorage.getItem('token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const res = await fetch(`${apiUrl}/api/admin/courses/${courseToDelete}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            if (res.ok) {
+                fetchUser()
+                setShowDeleteCourseModal(false)
+                setCourseToDelete(null)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     if (loading) return <div className="p-8 text-center text-slate-500">Loading user profile...</div>
     if (!user) return <div className="p-8 text-center text-slate-500">User not found</div>
 
@@ -179,6 +259,13 @@ export default function UserProfilePage() {
                     </div>
 
                     <div className="flex flex-col gap-2 min-w-[150px]">
+                        <Button
+                            variant="outline"
+                            className="justify-start gap-2 bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 hover:text-blue-700"
+                            onClick={() => router.push(`/admin/messages?userId=${user.id}`)}
+                        >
+                            <Mail size={16} /> Message User
+                        </Button>
                         <Button variant="outline" className="justify-start gap-2" onClick={handleToggleSuspend}>
                             {user.status === 'active' ? <><Ban size={16} /> Suspend User</> : <><CheckCircle size={16} /> Activate User</>}
                         </Button>
@@ -201,7 +288,9 @@ export default function UserProfilePage() {
                                     <BookOpen size={20} className="text-slate-400" />
                                     Enrollment History
                                 </h3>
-                                {/* Could add 'Enroll' button here that opens modal - logic would need to be moved/duplicated */}
+                                <Button onClick={() => setShowEnrollModal(true)} size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
+                                    <BookOpen size={16} className="mr-2" /> Enroll Student
+                                </Button>
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm text-left">
@@ -242,13 +331,60 @@ export default function UserProfilePage() {
                     </div>
                 )}
 
-                {/* Purchase History */}
+                {/* Tutor Courses Section */}
+                {user.role === 'tutor' && (
+                    <div className="lg:col-span-2">
+                        <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+                            <div className="p-6 border-b border-slate-100">
+                                <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <BookOpen size={20} className="text-slate-400" />
+                                    Courses Offered
+                                </h3>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm text-left">
+                                    <thead className="bg-slate-50 text-xs text-slate-500 uppercase font-medium">
+                                        <tr>
+                                            <th className="px-6 py-3">Course Name</th>
+                                            <th className="px-6 py-3">Level</th>
+                                            <th className="px-6 py-3 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        {user.courses && user.courses.length > 0 ? user.courses.map(course => (
+                                            <tr key={course.id} className="hover:bg-slate-50">
+                                                <td className="px-6 py-4 font-medium text-slate-900">{course.name}</td>
+                                                <td className="px-6 py-4 text-slate-600">{course.level}</td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={() => handleDeleteCourseClick(course.id)}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        )) : (
+                                            <tr>
+                                                <td colSpan={3} className="px-6 py-8 text-center text-slate-400">No active courses.</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Purchase/Payout History */}
                 <div className="lg:col-span-2">
                     <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
                         <div className="p-6 border-b border-slate-100">
                             <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
                                 <Shield size={20} className="text-slate-400" />
-                                Purchase History
+                                {user.role === 'tutor' ? 'Payout History' : 'Purchase History'}
                             </h3>
                         </div>
                         <div className="overflow-x-auto">
@@ -288,6 +424,63 @@ export default function UserProfilePage() {
                 </div>
 
             </div>
+
+            {/* Enroll Modal */}
+            {showEnrollModal && (
+                <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] p-4">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative">
+                        <button onClick={() => setShowEnrollModal(false)} className="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                            <X size={20} />
+                        </button>
+                        <h3 className="text-xl font-bold text-slate-900 mb-4">Enroll Student</h3>
+                        <p className="text-sm text-slate-500 mb-6">Select a course to enroll <strong>{user.name}</strong>.</p>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Select Course</label>
+                                <select
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg"
+                                    value={enrollData.course_id}
+                                    onChange={(e) => setEnrollData({ ...enrollData, course_id: e.target.value })}
+                                >
+                                    <option value="">-- Choose Course --</option>
+                                    {courses.map(c => (
+                                        <option key={c.id} value={c.id}>{c.name} ({c.level})</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-6">
+                            <Button variant="outline" onClick={() => setShowEnrollModal(false)} className="flex-1">Cancel</Button>
+                            <Button onClick={handleEnrollSubmit} className="flex-1 bg-purple-600 hover:bg-purple-700">Enroll</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Course Confirmation Modal */}
+            {showDeleteCourseModal && (
+                <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] p-4">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative">
+                        <button onClick={() => setShowDeleteCourseModal(false)} className="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                            <X size={20} />
+                        </button>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 mb-4">
+                                <Trash2 size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-2">Delete Course?</h3>
+                            <p className="text-sm text-slate-500 mb-6">Are you sure you want to remove this course? This action cannot be undone.</p>
+
+                            <div className="flex gap-3 w-full">
+                                <Button variant="outline" onClick={() => setShowDeleteCourseModal(false)} className="flex-1">No, Cancel</Button>
+                                <Button onClick={confirmDeleteCourse} variant="destructive" className="flex-1">Yes, Delete</Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

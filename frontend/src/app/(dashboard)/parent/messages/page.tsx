@@ -1,19 +1,31 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import MessagesInterface from "@/components/shared/messages-interface"
-import { MOCK_USERS } from "@/lib/mock-data"
+import api from "@/lib/api"
 
 export default function ParentMessagesPage() {
-    // convert record to array and filter for admins
-    const admins = Object.values(MOCK_USERS).filter(user => user.role === "admin")
+    const [contacts, setContacts] = useState([])
+    const [loading, setLoading] = useState(true)
 
-    const contacts = admins.map((admin, index) => ({
-        id: index + 1,
-        name: admin.name,
-        role: "Administrator",
-        lastMessage: "Welcome to Acelab! How can we help you today?",
-        time: "Now",
-        unread: 0,
-        online: true
-    }))
+    useEffect(() => {
+        fetchContacts()
+    }, [])
+
+    const fetchContacts = async () => {
+        try {
+            const { data } = await api.get('/messages/contacts')
+            setContacts(data || [])
+        } catch (error) {
+            console.error("Failed to fetch contacts:", error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    if (loading) {
+        return <div className="p-8 text-center text-slate-500">Loading messages...</div>
+    }
 
     return <MessagesInterface contacts={contacts} />
 }

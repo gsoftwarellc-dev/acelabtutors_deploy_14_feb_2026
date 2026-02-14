@@ -39,14 +39,7 @@ export default function StudentDetailPage({ params }: { params: { id: string } }
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Total Hours</h3>
-                        <Clock size={20} />
-                    </div>
-                    <p className="text-3xl font-bold">{student.totalHours}h</p>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
                     <div className="flex items-center justify-between mb-2">
                         <h3 className="text-sm font-semibold opacity-90">Attendance</h3>
@@ -54,13 +47,7 @@ export default function StudentDetailPage({ params }: { params: { id: string } }
                     </div>
                     <p className="text-3xl font-bold">{student.attendance}</p>
                 </div>
-                <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Avg Score</h3>
-                        <TrendingUp size={20} />
-                    </div>
-                    <p className="text-3xl font-bold">{student.averageScore}</p>
-                </div>
+
                 <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-6 text-white">
                     <div className="flex items-center justify-between mb-2">
                         <h3 className="text-sm font-semibold opacity-90">Courses</h3>
@@ -100,7 +87,6 @@ export default function StudentDetailPage({ params }: { params: { id: string } }
                             <tr>
                                 <th className="px-6 py-3 font-medium text-left">Date</th>
                                 <th className="px-6 py-3 font-medium text-left">Subject</th>
-                                <th className="px-6 py-3 font-medium text-center">Duration</th>
                                 <th className="px-6 py-3 font-medium text-center">Status</th>
                             </tr>
                         </thead>
@@ -109,7 +95,6 @@ export default function StudentDetailPage({ params }: { params: { id: string } }
                                 <tr key={idx} className="hover:bg-slate-50">
                                     <td className="px-6 py-4 text-slate-900">{activity.date}</td>
                                     <td className="px-6 py-4 text-slate-600">{activity.subject}</td>
-                                    <td className="px-6 py-4 text-center text-slate-600">{activity.duration}</td>
                                     <td className="px-6 py-4 text-center">
                                         <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
                                             {activity.status}

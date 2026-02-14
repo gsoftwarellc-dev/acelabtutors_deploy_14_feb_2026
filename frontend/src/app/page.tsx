@@ -14,11 +14,9 @@ export default function Home() {
         <Testimonials />
         <HowItWorks />
       </main>
-      <footer className="py-8 border-t bg-slate-50">
-        <div className="container mx-auto px-4 text-center text-sm text-slate-500">
-          © {new Date().getFullYear()} Acelab Tutors. All rights reserved.
-        </div>
-      </footer>
+
     </div>
   );
 }
+
+import Link from "next/link";

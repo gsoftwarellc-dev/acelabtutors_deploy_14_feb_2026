@@ -7,12 +7,7 @@ import Link from "next/link"
 export default function StudentPerformancePage() {
     const [searchTerm, setSearchTerm] = useState("")
 
-    const students = [
-        { id: 1, name: "Alex Johnson", email: "alex@example.com", courses: 2, attendance: "98%", totalHours: 48 },
-        { id: 2, name: "Sarah Martinez", email: "sarah@example.com", courses: 1, attendance: "95%", totalHours: 32 },
-        { id: 3, name: "Emily Brown", email: "emily@example.com", courses: 1, attendance: "100%", totalHours: 24 },
-        { id: 4, name: "Michael Lee", email: "michael@example.com", courses: 1, attendance: "92%", totalHours: 36 },
-    ]
+    const students: any[] = []
 
     const filteredStudents = students.filter(student =>
         student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -48,7 +43,6 @@ export default function StudentPerformancePage() {
                                 <th className="px-6 py-3 font-medium text-left">Email</th>
                                 <th className="px-6 py-3 font-medium text-center">Courses</th>
                                 <th className="px-6 py-3 font-medium text-center">Attendance</th>
-                                <th className="px-6 py-3 font-medium text-center">Total Hours</th>
                                 <th className="px-6 py-3 font-medium text-center">Action</th>
                             </tr>
                         </thead>
@@ -61,7 +55,6 @@ export default function StudentPerformancePage() {
                                     <td className="px-6 py-4 text-center">
                                         <span className="font-bold text-green-600">{student.attendance}</span>
                                     </td>
-                                    <td className="px-6 py-4 text-center text-slate-600">{student.totalHours}h</td>
                                     <td className="px-6 py-4 text-center">
                                         <Link href={`/admin/performance/students/${student.id}`}>
                                             <button className="inline-flex items-center text-primary hover:text-primary/80 font-medium">

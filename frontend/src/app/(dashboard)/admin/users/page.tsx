@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, BookOpen, X, CheckCircle, Ban } from "lucide-react"
+import { Plus, BookOpen, X, CheckCircle, Ban, Search, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface User {
@@ -30,6 +30,7 @@ export default function UserManagementPage() {
     const [showCreateModal, setShowCreateModal] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
     const [showEnrollModal, setShowEnrollModal] = useState(false)
+    const [showPassword, setShowPassword] = useState(true)
 
     // Selection state
     const [selectedUser, setSelectedUser] = useState<User | null>(null)
@@ -43,6 +44,10 @@ export default function UserManagementPage() {
         password: "",
         role: "student"
     })
+
+    // Filter state
+    const [searchQuery, setSearchQuery] = useState("")
+    const [filterRole, setFilterRole] = useState("all")
 
     const [enrollData, setEnrollData] = useState({
         course_id: "",
@@ -228,6 +233,15 @@ export default function UserManagementPage() {
         }
     }
 
+    // Filter Logic
+    const filteredUsers = users.filter(user => {
+        const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.id.toString().includes(searchQuery)
+        const matchesRole = filterRole === 'all' || user.role === filterRole
+        return matchesSearch && matchesRole
+    })
+
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
@@ -238,6 +252,35 @@ export default function UserManagementPage() {
                 <Button onClick={handleOpenCreate} className="bg-green-600 hover:bg-green-700">
                     <Plus size={18} className="mr-2" /> Create User
                 </Button>
+            </div>
+
+            {/* Filters */}
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                <div className="relative w-full md:w-96">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input
+                        type="text"
+                        placeholder="Search by name, email, or ID..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    />
+                </div>
+
+                <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                    {['all', 'student', 'tutor', 'parent', 'admin'].map((role) => (
+                        <button
+                            key={role}
+                            onClick={() => setFilterRole(role)}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all whitespace-nowrap ${filterRole === role
+                                ? 'bg-slate-900 text-white shadow-md'
+                                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                                }`}
+                        >
+                            {role}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Users Table */}
@@ -256,7 +299,9 @@ export default function UserManagementPage() {
                         <tbody className="divide-y divide-slate-100">
                             {loading ? (
                                 <tr><td colSpan={5} className="text-center py-8">Loading users...</td></tr>
-                            ) : users.map((user) => (
+                            ) : filteredUsers.length === 0 ? (
+                                <tr><td colSpan={5} className="text-center py-12 text-slate-500">No users found matching your filters.</td></tr>
+                            ) : filteredUsers.map((user) => (
                                 <tr
                                     key={user.id}
                                     className="hover:bg-blue-50 cursor-pointer transition-colors group"
@@ -269,7 +314,11 @@ export default function UserManagementPage() {
                                             </div>
                                             <div>
                                                 <div className="font-medium text-slate-900 group-hover:text-blue-700 transition-colors">{user.name}</div>
-                                                <div className="text-slate-500 text-xs">{user.email}</div>
+                                                <div className="flex gap-2 text-xs text-slate-500">
+                                                    <span>ID: {user.id}</span>
+                                                    <span>•</span>
+                                                    <span>{user.email}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -315,7 +364,7 @@ export default function UserManagementPage() {
                                     {selectedUser.name.charAt(0)}
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-900">{selectedUser.name}</h2>
+                                    <h2 className="text-2xl font-bold text-slate-900">{selectedUser.name} <span className="text-slate-400 text-lg font-normal">#{selectedUser.id}</span></h2>
                                     <p className="text-slate-500">{selectedUser.email}</p>
                                     <div className="flex gap-2 mt-2">
                                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize border ${selectedUser.role === "student" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-slate-50 text-slate-700 border-slate-200"
@@ -438,13 +487,22 @@ export default function UserManagementPage() {
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">{isEditing ? 'New Password (Optional)' : 'Password'}</label>
-                                <input
-                                    type="password"
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg"
-                                    placeholder="••••••••"
-                                />
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg pr-10"
+                                        placeholder="••••••••"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                    >
+                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Role</label>

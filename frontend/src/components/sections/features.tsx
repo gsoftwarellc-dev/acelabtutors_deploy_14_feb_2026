@@ -1,6 +1,7 @@
 "use client"
 
 import { Calendar, CheckCircle, GraduationCap, Users, Sparkles } from "lucide-react";
+import Link from "next/link";
 
 const features = [
     {
@@ -101,10 +102,12 @@ export function Features() {
                 {/* Bottom CTA */}
                 <div className="mt-16 text-center">
                     <p className="text-slate-600 mb-4">Ready to experience the difference?</p>
-                    <button className="group relative px-8 py-4 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-primary/50 transition-all duration-300 hover:scale-105">
-                        <span className="relative z-10">Get Started Today</span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-                    </button>
+                    <Link href="/register">
+                        <button className="group relative px-8 py-4 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-primary/50 transition-all duration-300 hover:scale-105">
+                            <span className="relative z-10">Get Started Today</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+                        </button>
+                    </Link>
                 </div>
             </div>
         </section>
