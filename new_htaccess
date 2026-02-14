@@ -1,0 +1,37 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. Route API requests
+    RewriteCond %{DOCUMENT_ROOT}/backend/public/$1 -f
+    RewriteRule ^api/(.*)$ backend/public/$1 [L]
+
+    RewriteCond %{REQUEST_URI} ^/api [NC]
+    RewriteRule ^api/(.*)$ backend/public/index.php [L]
+
+    # 2. Serve PRE-RENDERED HTML files (Fix for Routing)
+    # Check if a corresponding .html file exists in frontend/out
+    # e.g. /admin -> frontend/out/admin.html
+    RewriteCond %{DOCUMENT_ROOT}/frontend/out/$1.html -f
+    RewriteRule ^(.*)$ frontend/out/$1.html [L]
+
+    # Check if it's a directory with an index.html
+    RewriteCond %{DOCUMENT_ROOT}/frontend/out/$1/index.html -f
+    RewriteRule ^(.*)$ frontend/out/$1/index.html [L]
+
+    # 3. Serve Static Assets (CSS, JS, Images) if they exist
+    RewriteCond %{DOCUMENT_ROOT}/frontend/out/%{REQUEST_URI} -f
+    RewriteRule ^(.*)$ frontend/out/$1 [L]
+
+    # 4. Root URL -> Index
+    RewriteRule ^$ frontend/out/index.html [L]
+
+    # 5. SPA Fallback
+    # If no file/dir matched above, serve index.html (Client-Side Routing)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ frontend/out/index.html [L]
+</IfModule>
+
+# Security
+Options -Indexes

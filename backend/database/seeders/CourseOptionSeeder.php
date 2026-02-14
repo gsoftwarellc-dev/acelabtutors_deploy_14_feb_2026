@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use App\Models\CourseOption;
 
 class CourseOptionSeeder extends Seeder
 {
@@ -12,22 +13,66 @@ class CourseOptionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Type of School
-        $schoolTypes = ['Primary', 'Secondary', 'College', 'University'];
-        foreach ($schoolTypes as $value) {
-            \App\Models\CourseOption::firstOrCreate(['type' => 'type_of_school', 'value' => $value]);
+        // Clear existing options to match the requested data exactly
+        // We truncate to be safe
+        DB::table('course_options')->truncate();
+
+        $subjects = [
+            'Maths',
+            'English Language',
+            'Verbal Reasoning',
+            'Non-verbal Reasoning',
+            'Physics',
+            'Chemistry',
+            'Biology',
+            'Further Maths',
+            'Computer Science',
+            'History',
+            'Geography',
+            'French',
+            'Spanish',
+            'German',
+            'Business Studies',
+            'Economics',
+            'Psychology',
+            'Sociology',
+            'Art & Design',
+            'Music',
+            'Physical Education'
+        ];
+
+        $years = [
+            'Primary 2',
+            'Year 3',
+            'Year 4',
+            'Year 5 (11 Plus Prep)',
+            'Year 6 (SATS)',
+            'Year 7',
+            'Year 8',
+            'Year 9',
+            'Year 10',
+            'Year 11',
+            'A-Levels'
+        ];
+
+        $schoolTypes = [
+            'Primary School',
+            'Secondary School',
+            'A-Levels',
+            'College',
+            'Sixth Form'
+        ];
+
+        foreach ($subjects as $subject) {
+            CourseOption::firstOrCreate(['type' => 'subject', 'value' => $subject]);
         }
 
-        // Year Group
-        $years = ['Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'Year 12', 'Year 13'];
-        foreach ($years as $value) {
-            \App\Models\CourseOption::firstOrCreate(['type' => 'year', 'value' => $value]);
+        foreach ($years as $year) {
+            CourseOption::firstOrCreate(['type' => 'year', 'value' => $year]);
         }
 
-        // Subjects
-        $subjects = ['Mathematics', 'English', 'Science', 'Physics', 'Chemistry', 'Biology', 'History'];
-        foreach ($subjects as $value) {
-            \App\Models\CourseOption::firstOrCreate(['type' => 'subject', 'value' => $value]);
+        foreach ($schoolTypes as $type) {
+            CourseOption::firstOrCreate(['type' => 'type_of_school', 'value' => $type]);
         }
     }
 }

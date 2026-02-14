@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { DollarSign, TrendingUp, CheckCircle, Clock, Link as LinkIcon, ExternalLink, Search, AlertCircle, Loader2, Plus, Copy, Check } from "lucide-react"
+import { DollarSign, TrendingUp, CheckCircle, Clock, ExternalLink, Search, AlertCircle, Loader2, Plus, Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -407,69 +407,55 @@ export default function AdminFinancePage() {
                 </div>
             </div>
 
-            {/* Payment Gateway Integration */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-slate-900 flex items-center">
-                        <LinkIcon className="mr-2 text-slate-500" size={20} />
-                        Payment Gateway
-                    </h2>
-                    {isStripeConnected && (
-                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium flex items-center">
-                            <CheckCircle size={12} className="mr-1" /> Connected
-                        </span>
-                    )}
-                </div>
-                <div className="p-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="flex items-center gap-4">
-                            <div className="h-16 w-16 bg-[#635BFF] rounded-xl flex items-center justify-center text-white shrink-0">
-                                <span className="font-bold text-2xl">S</span>
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-slate-900">Stripe Payments</h3>
-                                <p className="text-slate-600 max-w-xl">
-                                    {isStripeConnected
-                                        ? "Your Stripe account is successfully connected. The dashboard is now syncing live data."
-                                        : "Connect your Stripe account to start accepting payments and see real-time financial data."}
-                                </p>
-                            </div>
+            {/* Stripe — connect live */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <div className="p-8 md:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+                    <div className="flex items-center gap-5">
+                        <div className="h-14 w-14 rounded-2xl bg-[#635BFF] flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-lg shadow-[#635BFF]/25">
+                            S
                         </div>
                         <div>
-                            {isStripeConnected ? (
-                                <div className="flex gap-3">
-                                    <Button onClick={() => setIsInvoiceOpen(true)} className="bg-slate-900 text-white hover:bg-slate-800">
-                                        <Plus size={16} className="mr-2" /> Create Invoice
+                            <h2 className="text-lg font-bold text-slate-900">Stripe</h2>
+                            <p className="text-slate-500 text-sm mt-0.5">
+                                {isStripeConnected ? "Live account connected" : "Connect your live Stripe account to accept payments"}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 flex-wrap">
+                        {isStripeConnected ? (
+                            <>
+                                <Button onClick={() => setIsInvoiceOpen(true)} size="sm" className="bg-slate-900 hover:bg-slate-800 text-white">
+                                    <Plus size={16} className="mr-1.5" /> Invoice
+                                </Button>
+                                <Button onClick={() => setIsPayoutOpen(true)} size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white border-0">
+                                    <DollarSign size={16} className="mr-1.5" /> Pay Tutor
+                                </Button>
+                                <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer">
+                                    <Button type="button" size="sm" variant="outline" className="text-slate-600 border-slate-200">
+                                        <ExternalLink size={16} className="mr-1.5" /> Dashboard
                                     </Button>
-                                    <Button onClick={() => setIsPayoutOpen(true)} className="bg-emerald-600 text-white hover:bg-emerald-700 border-none">
-                                        <DollarSign size={16} className="mr-2" /> Pay Tutor
-                                    </Button>
-                                    <Button variant="outline" className="text-slate-600 border-slate-200" onClick={() => setIsConfigOpen(true)}>
-                                        Configuration
-                                    </Button>
-                                    <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={handleDisconnectStripe}>
-                                        Disconnect
-                                    </Button>
-                                    <Button className="bg-[#635BFF] hover:bg-[#544DCB] text-white">
-                                        <ExternalLink size={16} className="mr-2" /> Stripe Dashboard
-                                    </Button>
-                                </div>
-                            ) : (
+                                </a>
+                                <Button type="button" size="sm" variant="ghost" className="text-slate-500" onClick={() => setIsConfigOpen(true)}>
+                                    Settings
+                                </Button>
+                                <Button type="button" size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={handleDisconnectStripe}>
+                                    Disconnect
+                                </Button>
+                            </>
+                        ) : (
+                            <>
                                 <Button
                                     onClick={handleConnectStripe}
                                     disabled={isConnecting}
-                                    className="bg-[#635BFF] hover:bg-[#544DCB] text-white px-6 py-6 text-lg h-auto"
+                                    className="bg-[#635BFF] hover:bg-[#544DCB] text-white px-6 h-11 font-medium rounded-xl shadow-lg shadow-[#635BFF]/20"
                                 >
-                                    {isConnecting ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Connecting...
-                                        </>
-                                    ) : (
-                                        "Connect with Stripe"
-                                    )}
+                                    {isConnecting ? <Loader2 className="h-5 w-5 animate-spin" /> : "Connect with Stripe"}
                                 </Button>
-                            )}
-                        </div>
+                                <button type="button" onClick={() => setIsConfigOpen(true)} className="text-sm text-slate-400 hover:text-slate-600">
+                                    Settings
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
@@ -808,14 +794,13 @@ export default function AdminFinancePage() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
+                                    <td colSpan={9} className="px-6 py-12 text-center text-slate-500">
                                         {transactions.length === 0 && !isStripeConnected ? (
-                                            <div className="flex flex-col items-center">
-                                                <AlertCircle className="mb-2 text-slate-400" />
-                                                Connect Stripe to view transactions
-                                            </div>
-                                        ) : (
+                                            "Connect Stripe above to see transactions"
+                                        ) : searchTerm ? (
                                             `No payments found matching "${searchTerm}"`
+                                        ) : (
+                                            "No transactions yet"
                                         )}
                                     </td>
                                 </tr>

@@ -120,8 +120,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('admin/registration-form-options', \App\Http\Controllers\RegistrationFormOptionController::class)
         ->names('admin.registration-form-options');
 
-    // Student Registration Routes
-    Route::post('/student-registrations', [\App\Http\Controllers\StudentRegistrationController::class, 'store']);
+    // Admin Registration Form Settings
+    Route::post('/admin/registration-form-settings', [\App\Http\Controllers\RegistrationFormSettingController::class, 'update']);
+
+    // Admin Registration Management Routes
     Route::get('/admin/registrations', [\App\Http\Controllers\StudentRegistrationController::class, 'index']);
     Route::put('/admin/registrations/{id}', [\App\Http\Controllers\StudentRegistrationController::class, 'update']);
     Route::delete('/admin/registrations/{id}', [\App\Http\Controllers\StudentRegistrationController::class, 'destroy']);
@@ -142,6 +144,7 @@ Route::get('/public/courses', [\App\Http\Controllers\CourseContentController::cl
 Route::get('/course-options', [\App\Http\Controllers\CourseOptionsController::class, 'index']);
 Route::get('/registration-form-options', [\App\Http\Controllers\RegistrationFormOptionController::class, 'index']);
 Route::get('/registration-form-settings/{form_type}', [\App\Http\Controllers\RegistrationFormSettingController::class, 'show']);
+Route::post('/student-registrations', [\App\Http\Controllers\StudentRegistrationController::class, 'store']);
 Route::post('/parent/search-child', [\App\Http\Controllers\ParentDashboardController::class, 'searchChild']);
 
 // Public Checkout Route

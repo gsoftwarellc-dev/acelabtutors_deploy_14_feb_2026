@@ -21,7 +21,7 @@ class RegistrationFormSettingController extends Controller
         if (!$setting) {
             // Return defaults if not found (though seeder should have handled this)
             return response()->json([
-                'form_type' => $request->form_type,
+                'form_type' => $form_type,
                 'title' => '',
                 'subtitle' => '',
                 'alert_text' => '',
