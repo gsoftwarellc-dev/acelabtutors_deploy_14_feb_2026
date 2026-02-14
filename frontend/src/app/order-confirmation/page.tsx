@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Navbar } from "@/components/layout/navbar"
 import { Button } from "@/components/ui/button"
@@ -26,7 +26,7 @@ interface OrderDetails {
     status: string
 }
 
-export default function OrderConfirmationPage() {
+function OrderConfirmationContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const sessionId = searchParams.get('session_id')
@@ -213,5 +213,13 @@ export default function OrderConfirmationPage() {
                 </div>
             </main>
         </div>
+    )
+}
+
+export default function OrderConfirmationPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <OrderConfirmationContent />
+        </Suspense>
     )
 }

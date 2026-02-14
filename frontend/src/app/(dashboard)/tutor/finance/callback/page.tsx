@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Loader2, CheckCircle, XCircle } from "lucide-react"
 import api from "@/lib/api"
 import { Button } from "@/components/ui/button"
 
-export default function StripeCallbackPage() {
+function StripeCallbackContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing')
@@ -79,5 +79,13 @@ export default function StripeCallbackPage() {
                 </>
             )}
         </div>
+    )
+}
+
+export default function StripeCallbackPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <StripeCallbackContent />
+        </Suspense>
     )
 }

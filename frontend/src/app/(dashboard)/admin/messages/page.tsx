@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Loader2 } from "lucide-react"
 import MessagesInterface from "@/components/shared/messages-interface"
 
-export default function AdminMessagesPage() {
+function AdminMessagesContent() {
     const searchParams = useSearchParams()
     const urlUserId = searchParams.get('userId')
 
@@ -80,4 +80,12 @@ export default function AdminMessagesPage() {
     }
 
     return <MessagesInterface contacts={contacts} />
+}
+
+export default function AdminMessagesPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AdminMessagesContent />
+        </Suspense>
+    )
 }

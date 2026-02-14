@@ -1,0 +1,40 @@
+#!/usr/bin/expect -f
+
+set timeout 60
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password "qD*mX8v2%]+|;91"
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "cd domains/acelabtutors.co.uk/public_html\r"
+
+expect "$ "
+send "git pull origin main\r"
+
+expect "$ "
+send "cd backend\r"
+
+expect "$ "
+# Install dependencies just in case (optional, might fail if composer not in path)
+# send "composer install --no-interaction --prefer-dist --optimize-autoloader\r"
+
+expect "$ "
+send "php artisan config:clear\r"
+
+expect "$ "
+send "php artisan route:clear\r"
+
+expect "$ "
+send "php artisan migrate --force\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof

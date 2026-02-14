@@ -1,0 +1,43 @@
+#!/usr/bin/expect -f
+
+set timeout 600
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password "qD*mX8v2%]+|;91"
+set local_file "frontend_build.tar.gz"
+set remote_dir "domains/acelabtutors.co.uk/public_html/frontend"
+
+# Step 1: Upload via SCP
+spawn scp -P $port $local_file $user@$host:$remote_dir
+expect {
+    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+expect eof
+
+# Step 2: Extract via SSH
+spawn ssh -p $port $user@$host
+expect {
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "cd $remote_dir\r"
+
+expect "$ "
+# Ensure out directory exists and is clean-ish (optional, tar overwrites)
+send "mkdir -p out\r"
+
+expect "$ "
+# Extract tarball into out directory
+send "tar -xzf frontend_build.tar.gz -C out\r"
+
+expect "$ "
+# Clean up tarball
+send "rm frontend_build.tar.gz\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof

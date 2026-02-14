@@ -1,0 +1,40 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password "qD*mX8v2%]+|;91"
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+# Use backslash to escape $
+send "echo \$PATH\r"
+
+expect "$ "
+send "ls -la\r"
+
+expect "$ "
+send "ls -la .nvm\r"
+
+expect "$ "
+# Check for nvm command availability
+send "command -v nvm\r"
+
+expect "$ "
+# Check for node
+send "which node\r"
+
+expect "$ "
+# Check for npm
+send "which npm\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof

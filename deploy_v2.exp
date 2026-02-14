@@ -1,0 +1,83 @@
+#!/usr/bin/expect -f
+
+set timeout 900
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+# --- Backend Deployment (api.acelabtutors.co.uk) ---
+expect "$ "
+send "cd domains/api.acelabtutors.co.uk/public_html\r"
+
+expect "$ "
+send "git fetch origin main\r"
+
+expect "$ "
+send "git reset --hard origin/main\r"
+
+expect "$ "
+send "composer install --no-interaction --prefer-dist --optimize-autoloader\r"
+
+expect "$ "
+send "php artisan migrate --force\r"
+
+expect "$ "
+send "php artisan config:cache\r"
+
+expect "$ "
+send "php artisan route:cache\r"
+
+
+# --- Frontend Deployment (acelabtutors.co.uk) ---
+expect "$ "
+# Navigate from api/.../public_html to acelabtutors/.../public_html
+send "cd ../../acelabtutors.co.uk/public_html\r"
+
+expect "$ "
+send "git fetch origin main\r"
+
+expect "$ "
+send "git reset --hard origin/main\r"
+
+expect "$ "
+# Navigate to frontend folder within public_html (since repo has frontend/backend folders?)
+# Wait, let's check repo structure in public_html
+# The repo has `frontend` and `backend` folders at root.
+# On server (acelabtutors.co.uk), if we pulled the repo to public_html, 
+# then `public_html/frontend` exists.
+# On server (api.acelabtutors.co.uk), if we pulled the repo to public_html, 
+# then `public_html/backend` exists.
+# AND `public_html/frontend` also exists there (since it's the same repo).
+# Correct?
+# If so, for frontend deploy, we must `cd frontend`.
+# For backend deploy, we must `cd backend`.
+#
+# Let's verify:
+# In Backend section above, I did `cd domains/api.../public_html`.
+# Then `git reset...`.
+# Then `composer install`... WAIT. `composer.json` is in `backend/`.
+# So I need to `cd backend` inside `public_html`!
+#
+# Corrected Path Logic:
+# Backend: domains/api.../public_html -> git reset -> cd backend -> composer/artisan.
+# Frontend: domains/acelabtutors.../public_html -> git reset -> cd frontend -> npm install/build.
+
+send "cd frontend\r"
+
+expect "$ "
+send "npm install\r"
+
+expect "$ "
+send "npm run build\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof

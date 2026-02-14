@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Navbar } from "@/components/layout/navbar"
 import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -15,7 +15,7 @@ const SCHOOL_TYPES = ["Primary", "Secondary", "College", "University"]
 const YEARS = ["Year 7", "Year 8", "Year 9", "Year 10", "Year 11", "Year 12", "Year 13"]
 const SUBJECTS = ["Mathematics", "English", "Science", "Physics", "Chemistry", "Biology", "History", "Geography", "Computer Science"]
 
-export default function CoursesPage() {
+function CoursesContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const { addItem, isInCart, setIsCartOpen } = useCart()
@@ -351,5 +351,13 @@ export default function CoursesPage() {
                 </div>
             </footer>
         </div>
+    )
+}
+
+export default function CoursesPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <CoursesContent />
+        </Suspense>
     )
 }

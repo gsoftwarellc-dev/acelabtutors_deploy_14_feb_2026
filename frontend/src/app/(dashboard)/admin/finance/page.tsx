@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { DollarSign, TrendingUp, CheckCircle, Clock, ExternalLink, Search, AlertCircle, Loader2, Plus, Copy, Check } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -16,8 +17,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-
-export default function AdminFinancePage() {
+function AdminFinanceContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
 
@@ -810,5 +810,13 @@ export default function AdminFinancePage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function AdminFinancePage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AdminFinanceContent />
+        </Suspense>
     )
 }

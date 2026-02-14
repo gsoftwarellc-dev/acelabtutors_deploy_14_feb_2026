@@ -1,0 +1,39 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password "qD*mX8v2%]+|;91"
+set local_file "new_htaccess"
+set remote_dir "domains/acelabtutors.co.uk/public_html"
+
+# Step 1: Upload via SCP
+spawn scp -P $port $local_file $user@$host:$remote_dir/.htaccess.new
+expect {
+    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+expect eof
+
+# Step 2: Swap files via SSH
+spawn ssh -p $port $user@$host
+expect {
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "cd $remote_dir\r"
+
+expect "$ "
+# Backup old htaccess just in case
+send "cp .htaccess .htaccess.bak\r"
+
+expect "$ "
+# Overwrite with new one
+send "mv .htaccess.new .htaccess\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof
