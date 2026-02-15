@@ -87,7 +87,6 @@ export function Sidebar({ role }: SidebarProps) {
             { href: "/admin/messages", label: "Messages", icon: MessageSquare },
             { href: "/admin/contacts", label: "Contacts", icon: Contact },
             { href: "/admin/finance", label: "Finance", icon: CreditCard },
-            { href: "/admin/approvals", label: "Course Approvals", icon: BookOpen },
             { href: "/admin/courses/control", label: "Control Courses", icon: SlidersHorizontal },
             { href: "/admin/registrations", label: "Registrations", icon: History },
             { href: "/admin/enrollment", label: "Course Enrollment", icon: BookCopy },

@@ -20,6 +20,7 @@ export default function RegisterPage() {
         { id: 'student', label: 'Student', icon: GraduationCap },
         { id: 'tutor', label: 'Tutor', icon: BookOpen },
         { id: 'parent', label: 'Parent', icon: Users },
+        { id: 'admin', label: 'Admin', icon: Shield },
     ]
 
 
@@ -68,7 +69,7 @@ export default function RegisterPage() {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">I am a...</label>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-4 gap-2">
                             {signupRoles.map((r) => (
                                 <button
                                     key={r.id}

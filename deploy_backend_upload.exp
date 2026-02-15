@@ -1,0 +1,61 @@
+#!/usr/bin/expect -f
+
+set timeout 1800
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+set local_dir "backend/"
+set remote_path "domains/api.acelabtutors.co.uk/public_html"
+
+# --- 1. Rsync Backend Files ---
+# We use rsync to upload backend content to public_html
+# Exclude .env, vendor, node_modules, storage/logs
+spawn rsync -avhz --exclude=.env --exclude=vendor --exclude=node_modules --exclude=storage/*.key --exclude=.git -e "ssh -p $port" $local_dir $user@$host:$remote_path/
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+expect eof
+
+# --- 2. Run Remote Commands ---
+spawn ssh -p $port $user@$host
+expect {
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "cd $remote_path\r"
+
+# Check if .env exists, if not, we might need to create it or warn
+expect "$ "
+send "ls -la .env\r"
+
+# Composer Install
+expect "$ "
+send "composer install --no-interaction --prefer-dist --optimize-autoloader\r"
+
+# Migrations
+expect "$ "
+send "php artisan migrate --force\r"
+
+# Clear Caches
+expect "$ "
+send "php artisan config:clear\r"
+expect "$ "
+send "php artisan route:clear\r"
+expect "$ "
+send "php artisan view:clear\r"
+
+# Fix Permissions
+expect "$ "
+send "chmod -R 775 storage bootstrap/cache\r"
+
+# Restart Queue (if any) or PHP (usually via touch)
+# Does Laravel backend need restart? Usually no for PHP-FPM unless code cache.
+# But we can try to touch a file to trigger reload if setup.
+
+expect "$ "
+send "exit\r"
+
+expect eof

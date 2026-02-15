@@ -58,11 +58,10 @@ class AdminCourseController extends Controller
         ]);
     }
 
-    // Get all approved courses for control panel
+    // Get all courses for control panel
     public function getApprovedCourses()
     {
-        $courses = Course::where('is_approved', true) // Fetch all approved courses
-            ->with(['tutor:id,name,email'])
+        $courses = Course::with(['tutor:id,name,email'])
             ->orderBy('updated_at', 'desc')
             ->get();
 

@@ -21,6 +21,8 @@ class StudentRegistration extends Model
         'student_email',
         'selections',
         'specific_needs',
+        'requested_year',
+        'assigned_year',
         'status',
     ];
 

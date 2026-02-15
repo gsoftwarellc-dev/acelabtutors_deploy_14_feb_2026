@@ -101,10 +101,7 @@ export default function AttendanceHistoryPage() {
         })
     }
 
-    const getAttendanceRate = (stats: AttendanceStats) => {
-        if (stats.total === 0) return 0
-        return Math.round((stats.present / stats.total) * 100)
-    }
+
 
     return (
         <div className="space-y-6">
@@ -187,7 +184,7 @@ export default function AttendanceHistoryPage() {
                         ) : (
                             <div className="space-y-6">
                                 {data.enrollments.map((enrollment) => {
-                                    const attendanceRate = getAttendanceRate(enrollment.attendance_stats)
+
                                     return (
                                         <Card key={enrollment.course_id}>
                                             <CardHeader className="border-b bg-slate-50">
@@ -205,46 +202,7 @@ export default function AttendanceHistoryPage() {
                                             </CardHeader>
                                             <CardContent className="p-6">
                                                 {/* Attendance Summary */}
-                                                <div className="mb-6">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <span className="text-sm font-medium text-slate-700">
-                                                            Attendance Rate
-                                                        </span>
-                                                        <span className={`text-lg font-bold ${attendanceRate >= 80 ? 'text-green-600' :
-                                                            attendanceRate >= 60 ? 'text-yellow-600' :
-                                                                'text-red-600'
-                                                            }`}>
-                                                            {attendanceRate}%
-                                                        </span>
-                                                    </div>
-                                                    <div className="w-full bg-slate-200 rounded-full h-2 mb-4">
-                                                        <div
-                                                            className={`h-2 rounded-full transition-all ${attendanceRate >= 80 ? 'bg-green-600' :
-                                                                attendanceRate >= 60 ? 'bg-yellow-600' :
-                                                                    'bg-red-600'
-                                                                }`}
-                                                            style={{ width: `${attendanceRate}%` }}
-                                                        />
-                                                    </div>
 
-                                                    <div className="grid grid-cols-3 gap-3">
-                                                        <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle className="w-4 h-4 text-green-600" />
-                                                            <span className="text-slate-600">Present:</span>
-                                                            <span className="font-semibold">{enrollment.attendance_stats.present}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-2 text-sm">
-                                                            <XCircle className="w-4 h-4 text-red-600" />
-                                                            <span className="text-slate-600">Absent:</span>
-                                                            <span className="font-semibold">{enrollment.attendance_stats.absent}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-2 text-sm">
-                                                            <Clock className="w-4 h-4 text-yellow-600" />
-                                                            <span className="text-slate-600">Late:</span>
-                                                            <span className="font-semibold">{enrollment.attendance_stats.late}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
 
                                                 {/* Attendance History Table */}
                                                 {enrollment.attendance_records.length > 0 ? (
@@ -258,7 +216,6 @@ export default function AttendanceHistoryPage() {
                                                                     <TableRow>
                                                                         <TableHead>Date</TableHead>
                                                                         <TableHead>Status</TableHead>
-                                                                        <TableHead>Visits</TableHead>
                                                                     </TableRow>
                                                                 </TableHeader>
                                                                 <TableBody>
@@ -283,11 +240,6 @@ export default function AttendanceHistoryPage() {
                                                                                 >
                                                                                     {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
                                                                                 </Badge>
-                                                                            </TableCell>
-                                                                            <TableCell>
-                                                                                <span className="text-sm font-medium text-slate-700">
-                                                                                    {record.visits} {record.visits === 1 ? 'time' : 'times'}
-                                                                                </span>
                                                                             </TableCell>
                                                                         </TableRow>
                                                                     ))}

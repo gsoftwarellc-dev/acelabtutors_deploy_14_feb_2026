@@ -26,13 +26,6 @@ import {
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 
 interface Registration {
     id: number
@@ -46,6 +39,8 @@ interface Registration {
     student_email: string | null
     selections: Record<string, string[]>
     specific_needs: string | null
+    requested_year: string | null
+    assigned_year: string | null
     status: 'pending' | 'approved' | 'rejected'
     created_at: string
 }
@@ -62,7 +57,7 @@ export default function AdminRegistrationsPage() {
     const [isEditOpen, setIsEditOpen] = useState(false)
 
     // Form state for edit
-    const [editData, setEditData] = useState<Partial<Registration>>({})
+    const [editData, setEditData] = useState<{ status?: string; assigned_year?: string }>({})
 
     useEffect(() => {
         fetchRegistrations()
@@ -149,7 +144,11 @@ export default function AdminRegistrationsPage() {
                         <TableRow>
                             <TableHead>Student Name</TableHead>
                             <TableHead>Parent Name</TableHead>
+                            <TableHead>Parent Email</TableHead>
+                            <TableHead>Parent Phone</TableHead>
                             <TableHead>Type</TableHead>
+                            <TableHead>Requested Year</TableHead>
+                            <TableHead>Assigned Year</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Date</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
@@ -158,14 +157,14 @@ export default function AdminRegistrationsPage() {
                     <TableBody>
                         {loading ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center py-12">
+                                <TableCell colSpan={10} className="text-center py-12">
                                     <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
                                     <p className="text-slate-500 mt-2 text-sm">Loading registrations...</p>
                                 </TableCell>
                             </TableRow>
                         ) : filteredRegistrations.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center py-12 text-slate-500">
+                                <TableCell colSpan={10} className="text-center py-12 text-slate-500">
                                     No registrations found.
                                 </TableCell>
                             </TableRow>
@@ -174,6 +173,8 @@ export default function AdminRegistrationsPage() {
                                 <TableRow key={reg.id}>
                                     <TableCell className="font-medium text-slate-900">{reg.student_name}</TableCell>
                                     <TableCell className="text-slate-600">{reg.parent_name}</TableCell>
+                                    <TableCell className="text-slate-500 text-xs">{reg.parent_email}</TableCell>
+                                    <TableCell className="text-slate-500 text-xs">{reg.parent_phone}</TableCell>
                                     <TableCell>
                                         <Badge variant="outline" className={cn(
                                             "capitalize font-semibold",
@@ -181,6 +182,24 @@ export default function AdminRegistrationsPage() {
                                         )}>
                                             {reg.type}
                                         </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        {reg.type === 'free' && reg.requested_year ? (
+                                            <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50 font-semibold">
+                                                {reg.requested_year}
+                                            </Badge>
+                                        ) : (
+                                            <span className="text-slate-300 text-xs">—</span>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {reg.type === 'free' && reg.assigned_year ? (
+                                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100 font-semibold">
+                                                {reg.assigned_year}
+                                            </Badge>
+                                        ) : (
+                                            <span className="text-slate-300 text-xs">—</span>
+                                        )}
                                     </TableCell>
                                     <TableCell>{getStatusBadge(reg.status)}</TableCell>
                                     <TableCell className="text-slate-500">{new Date(reg.created_at).toLocaleDateString()}</TableCell>
@@ -203,7 +222,10 @@ export default function AdminRegistrationsPage() {
                                                 className="hover:bg-slate-100"
                                                 onClick={() => {
                                                     setSelectedRegistration(reg)
-                                                    setEditData({ status: reg.status })
+                                                    setEditData({
+                                                        status: reg.status,
+                                                        assigned_year: reg.assigned_year || ''
+                                                    })
                                                     setIsEditOpen(true)
                                                 }}
                                             >
@@ -253,8 +275,24 @@ export default function AdminRegistrationsPage() {
                                                 </div>
                                                 {selectedRegistration.student_email && (
                                                     <div>
-                                                        <p className="text-[11px] font-medium text-slate-500 mb-0.5">Direct Email</p>
+                                                        <p className="text-[11px] font-medium text-slate-500 mb-0.5">Student Email</p>
                                                         <p className="text-sm font-semibold text-slate-900">{selectedRegistration.student_email}</p>
+                                                    </div>
+                                                )}
+                                                {selectedRegistration.type === 'free' && selectedRegistration.requested_year && (
+                                                    <div>
+                                                        <p className="text-[11px] font-medium text-slate-500 mb-0.5">Requested Year</p>
+                                                        <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50 font-semibold">
+                                                            {selectedRegistration.requested_year}
+                                                        </Badge>
+                                                    </div>
+                                                )}
+                                                {selectedRegistration.type === 'free' && selectedRegistration.assigned_year && (
+                                                    <div>
+                                                        <p className="text-[11px] font-medium text-slate-500 mb-0.5">Assigned Year</p>
+                                                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100 font-semibold">
+                                                            {selectedRegistration.assigned_year}
+                                                        </Badge>
                                                     </div>
                                                 )}
                                             </div>
@@ -269,7 +307,7 @@ export default function AdminRegistrationsPage() {
                                                     <p className="text-[10px] text-slate-400 font-bold uppercase">{selectedRegistration.relationship}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-[11px] font-medium text-slate-500 mb-0.5">Email Address</p>
+                                                    <p className="text-[11px] font-medium text-slate-500 mb-0.5">Parent Email</p>
                                                     <p className="text-sm font-semibold text-slate-900">{selectedRegistration.parent_email}</p>
                                                 </div>
                                                 <div>
@@ -332,13 +370,24 @@ export default function AdminRegistrationsPage() {
                 </DialogContent>
             </Dialog>
 
-            {/* Edit Dialog (Status Update) */}
+            {/* Edit Dialog (Status + Year Assignment) */}
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Update Registration Status</DialogTitle>
+                        <DialogTitle>Update Registration</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
+                        {selectedRegistration && (
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 mb-2">
+                                <p className="text-xs text-slate-500">Student: <span className="font-bold text-slate-900">{selectedRegistration.student_name}</span></p>
+                                {selectedRegistration.type === 'free' && selectedRegistration.requested_year && (
+                                    <p className="text-xs text-slate-500 mt-1">
+                                        Requested Year: <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50 font-semibold text-[10px] ml-1">{selectedRegistration.requested_year}</Badge>
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
                         <div className="space-y-2">
                             <Label>Status</Label>
                             <select
@@ -351,10 +400,35 @@ export default function AdminRegistrationsPage() {
                                 <option value="rejected">Rejected</option>
                             </select>
                         </div>
+
+                        {/* Show year assignment when approving a free registration */}
+                        {selectedRegistration?.type === 'free' && editData.status === 'approved' && (
+                            <div className="space-y-2">
+                                <Label>Assign Year Group *</Label>
+                                <p className="text-[10px] text-slate-500">Select the year group this student should be assigned to for free classes.</p>
+                                <select
+                                    className="w-full h-10 rounded-md border border-slate-200 p-2 text-sm"
+                                    value={editData.assigned_year || ''}
+                                    onChange={(e) => setEditData({ ...editData, assigned_year: e.target.value })}
+                                    required
+                                >
+                                    <option value="">Select a year</option>
+                                    <option value="YEAR 8">Year 8</option>
+                                    <option value="YEAR 9">Year 9</option>
+                                    <option value="YEAR 10">Year 10</option>
+                                    <option value="YEAR 11">Year 11</option>
+                                </select>
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
-                        <Button onClick={handleUpdateRegistration}>Save Changes</Button>
+                        <Button
+                            onClick={handleUpdateRegistration}
+                            disabled={selectedRegistration?.type === 'free' && editData.status === 'approved' && !editData.assigned_year}
+                        >
+                            Save Changes
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

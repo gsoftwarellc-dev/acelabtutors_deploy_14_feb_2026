@@ -16,6 +16,13 @@ class StudentFinanceController extends Controller
 {
     protected function getStripeSecret()
     {
+        try {
+            $dbKey = \Illuminate\Support\Facades\DB::table('settings')->where('key', 'STRIPE_SECRET')->value('value');
+            if ($dbKey) return $dbKey;
+        } catch (\Exception $e) {
+            // Fallback
+        }
+
         return config('services.stripe.secret') ?? env('STRIPE_SECRET');
     }
 
@@ -128,7 +135,14 @@ class StudentFinanceController extends Controller
     {
         $payload = $request->getContent();
         $sig_header = $request->header('Stripe-Signature');
-        $endpoint_secret = config('services.stripe.webhook_secret') ?? env('STRIPE_WEBHOOK_SECRET');
+        $endpoint_secret = null;
+        try {
+            $endpoint_secret = \Illuminate\Support\Facades\DB::table('settings')->where('key', 'STRIPE_WEBHOOK_SECRET')->value('value');
+        } catch (\Exception $e) {}
+
+        if (!$endpoint_secret) {
+            $endpoint_secret = config('services.stripe.webhook_secret') ?? env('STRIPE_WEBHOOK_SECRET');
+        }
 
         try {
             $event = Webhook::constructEvent(

@@ -9,6 +9,10 @@ class Lesson extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'start_time' => 'datetime',
+    ];
+
     protected $fillable = [
         'chapter_id', 
         'title', 

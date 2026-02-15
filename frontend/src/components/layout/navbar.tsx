@@ -35,7 +35,7 @@ export function Navbar() {
         { href: "/", label: "Home" },
         { href: "/student-registration", label: "Student Registration" },
         { href: "/free-class", label: "Free Class" },
-        { href: "/courses", label: "Courses" },
+        { href: "/courses", label: "Year" },
         { href: "/tutors", label: "Meet Our Tutors" },
         { href: "/contact", label: "Contact" },
     ];

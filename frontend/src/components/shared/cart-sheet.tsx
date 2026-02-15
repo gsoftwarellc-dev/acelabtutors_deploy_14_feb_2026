@@ -23,7 +23,6 @@ export function CartSheet() {
         }
 
         setIsCheckingOut(true)
-        setIsCheckingOut(true)
         try {
             const token = localStorage.getItem('token')
             // if (!token) {
@@ -108,9 +107,9 @@ export function CartSheet() {
                                         </div>
                                         <div className="flex items-center justify-between mt-2">
                                             <div className="flex flex-col">
-                                                <span className="font-bold text-slate-900">£{item.price.toFixed(2)}</span>
+                                                <span className="font-bold text-slate-900">£{Number(item.price).toFixed(2)}</span>
                                                 {item.registrationFee ? (
-                                                    <span className="text-[10px] text-slate-400">+ £{item.registrationFee.toFixed(2)} Reg. Fee</span>
+                                                    <span className="text-[10px] text-slate-400">+ £{Number(item.registrationFee).toFixed(2)} Reg. Fee</span>
                                                 ) : null}
                                             </div>
                                             <button

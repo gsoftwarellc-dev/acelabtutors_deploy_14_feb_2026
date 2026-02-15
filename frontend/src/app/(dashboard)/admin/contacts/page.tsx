@@ -10,6 +10,7 @@ import {
     User as UserIcon,
     MoreVertical
 } from "lucide-react"
+import api from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -44,17 +45,8 @@ export default function ContactsPage() {
 
     const fetchUsers = async () => {
         try {
-            const token = localStorage.getItem('token')
-            const response = await fetch('http://localhost:8000/api/admin/users', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json'
-                }
-            })
-            if (response.ok) {
-                const data = await response.json()
-                setUsers(data)
-            }
+            const response = await api.get('/admin/users')
+            setUsers(response.data)
         } catch (error) {
             console.error("Failed to fetch users", error)
         } finally {
@@ -123,8 +115,8 @@ export default function ContactsPage() {
                                 key={role}
                                 onClick={() => setRoleFilter(role)}
                                 className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all capitalize ${roleFilter === role
-                                        ? 'bg-white text-slate-900 shadow-sm'
-                                        : 'text-slate-500 hover:text-slate-700'
+                                    ? 'bg-white text-slate-900 shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-700'
                                     }`}
                             >
                                 {role}

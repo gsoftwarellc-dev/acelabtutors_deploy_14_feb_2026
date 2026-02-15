@@ -249,11 +249,11 @@ function CoursesContent() {
                                                     </div>
                                                     <div className="flex flex-col items-end gap-1 shrink-0">
                                                         <div className="text-lg font-bold text-slate-900 leading-none">
-                                                            {((course.price || 0) + (course.registration_fee || 0)) > 0 ? (
+                                                            {(Number(course.price || 0) + Number(course.registration_fee || 0)) > 0 ? (
                                                                 <>
-                                                                    £{((Number(course.price || 0) + Number(course.registration_fee || 0))).toFixed(2)}
-                                                                    {course.registration_fee > 0 && (
-                                                                        <span className="block text-[8px] text-slate-400 font-medium">Includes £{course.registration_fee} Reg. Fee</span>
+                                                                    £{(Number(course.price || 0) + Number(course.registration_fee || 0)).toFixed(2)}
+                                                                    {Number(course.registration_fee) > 0 && (
+                                                                        <span className="block text-[8px] text-slate-400 font-medium">Includes £{Number(course.registration_fee).toFixed(2)} Reg. Fee</span>
                                                                     )}
                                                                 </>
                                                             ) : 'Free'}
@@ -313,8 +313,8 @@ function CoursesContent() {
                                                                     addItem({
                                                                         id: course.id,
                                                                         name: course.name,
-                                                                        price: course.price || 0,
-                                                                        registrationFee: course.registration_fee || 0,
+                                                                        price: Number(course.price) || 0,
+                                                                        registrationFee: Number(course.registration_fee) || 0,
                                                                         tutorName: course.tutor?.name || "Tutor",
                                                                     })
                                                                 }

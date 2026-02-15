@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, BookOpen, X, CheckCircle, Ban, Search, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import api from "@/lib/api"
 
 interface User {
     id: number
@@ -65,15 +66,8 @@ export default function UserManagementPage() {
 
     const fetchUsers = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-            const res = await fetch(`${apiUrl}/api/admin/users`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-            if (res.ok) {
-                const data = await res.json()
-                setUsers(data)
-            }
+            const res = await api.get('/admin/users')
+            setUsers(res.data)
         } catch (error) {
             console.error("Failed to fetch users", error)
         } finally {
@@ -83,15 +77,8 @@ export default function UserManagementPage() {
 
     const fetchCourses = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-            const res = await fetch(`${apiUrl}/api/admin/courses`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-            if (res.ok) {
-                const data = await res.json()
-                setCourses(data)
-            }
+            const res = await api.get('/admin/courses')
+            setCourses(res.data)
         } catch (error) {
             console.error("Failed to fetch courses", error)
         }
@@ -124,40 +111,26 @@ export default function UserManagementPage() {
     }
 
     const handleFormSubmit = async () => {
-        const token = localStorage.getItem('token')
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const url = isEditing && selectedUser
-            ? `${apiUrl}/api/admin/users/${selectedUser.id}`
-            : `${apiUrl}/api/admin/users`
-
-        const method = isEditing ? 'PUT' : 'POST'
-
         const body: Record<string, string | null> = { ...formData }
         if (isEditing && !body.password) delete body.password
 
         try {
-            const res = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            })
-
-            if (res.ok) {
+            if (isEditing && selectedUser) {
+                const res = await api.put(`/admin/users/${selectedUser.id}`, body)
                 setShowCreateModal(false)
                 fetchUsers()
-                // Re-open profile if editing
-                if (isEditing && selectedUser) {
-                    const updatedUser = await res.json()
-                    setSelectedUser(updatedUser.user) // existing endpoint returns { message, user }
-                    setShowProfileModal(true)
-                }
+                setSelectedUser(res.data.user)
+                setShowProfileModal(true)
             } else {
-                alert("Operation failed.")
+                await api.post('/admin/users', body)
+                setShowCreateModal(false)
+                fetchUsers()
             }
-        } catch (error) {
+        } catch (error: any) {
+            const message = error?.response?.data?.message || error?.response?.data?.errors
+                ? JSON.stringify(error.response.data.errors || error.response.data.message)
+                : "Operation failed. Please check the form and try again."
+            alert(message)
             console.error("Error submitting form", error)
         }
     }
@@ -167,17 +140,9 @@ export default function UserManagementPage() {
         if (!confirm(`Are you sure you want to ${selectedUser.status === 'active' ? 'suspend' : 'activate'} this user?`)) return
 
         try {
-            const token = localStorage.getItem('token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-            const res = await fetch(`${apiUrl}/api/admin/users/${selectedUser.id}/toggle-suspend`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-            if (res.ok) {
-                const data = await res.json()
-                setUsers(users.map(u => u.id === selectedUser.id ? data.user : u))
-                setSelectedUser(data.user)
-            }
+            const res = await api.post(`/admin/users/${selectedUser.id}/toggle-suspend`, {})
+            setUsers(users.map(u => u.id === selectedUser.id ? res.data.user : u))
+            setSelectedUser(res.data.user)
         } catch (error) {
             console.error("Failed to toggle status", error)
         }
@@ -187,18 +152,10 @@ export default function UserManagementPage() {
         if (!selectedUser || !confirm("Are you sure you want to delete this user? This cannot be undone.")) return
 
         try {
-            const token = localStorage.getItem('token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-            const res = await fetch(`${apiUrl}/api/admin/users/${selectedUser.id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-
-            if (res.ok) {
-                setUsers(users.filter(user => user.id !== selectedUser.id))
-                setShowProfileModal(false)
-                setSelectedUser(null)
-            }
+            await api.delete(`/admin/users/${selectedUser.id}`)
+            setUsers(users.filter(user => user.id !== selectedUser.id))
+            setShowProfileModal(false)
+            setSelectedUser(null)
         } catch (error) {
             console.error("Failed to delete user", error)
         }
@@ -209,26 +166,13 @@ export default function UserManagementPage() {
         if (!enrollData.course_id) return alert("Please select a course")
 
         try {
-            const token = localStorage.getItem('token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-            const res = await fetch(`${apiUrl}/api/admin/users/${selectedUser.id}/enroll`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(enrollData)
-            })
-
-            if (res.ok) {
-                alert("Student successfully enrolled!")
-                setShowEnrollModal(false)
-                setEnrollData({ course_id: "", grade: "" })
-            } else {
-                const err = await res.json()
-                alert(err.message || "Enrollment failed")
-            }
-        } catch (error) {
+            await api.post(`/admin/users/${selectedUser.id}/enroll`, enrollData)
+            alert("Student successfully enrolled!")
+            setShowEnrollModal(false)
+            setEnrollData({ course_id: "", grade: "" })
+        } catch (error: any) {
+            const message = error?.response?.data?.message || "Enrollment failed"
+            alert(message)
             console.error("Failed to enroll", error)
         }
     }

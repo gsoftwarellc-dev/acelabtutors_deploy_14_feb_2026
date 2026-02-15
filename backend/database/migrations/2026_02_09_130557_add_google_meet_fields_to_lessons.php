@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('lessons', function (Blueprint $table) {
-            $table->string('meeting_type')->nullable()->after('status'); // 'instant' or 'scheduled'
-            $table->string('google_event_id')->nullable()->after('meeting_type');
-            $table->boolean('notifications_sent')->default(false)->after('google_event_id');
+            $table->string('meeting_type')->nullable(); // 'instant' or 'scheduled'
+            $table->string('google_event_id')->nullable();
+            $table->boolean('notifications_sent')->default(false);
         });
     }
 

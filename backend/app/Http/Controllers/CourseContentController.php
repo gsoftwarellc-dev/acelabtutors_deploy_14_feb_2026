@@ -13,7 +13,7 @@ class CourseContentController extends Controller
     // Get full curriculum for a course
     public function index($courseId)
     {
-        $course = Course::with(['chapters.lessons'])->findOrFail($courseId);
+        $course = Course::withTrashed()->with(['chapters.lessons'])->findOrFail($courseId);
         return response()->json($course->chapters);
     }
 
@@ -56,12 +56,9 @@ class CourseContentController extends Controller
         $updates['price'] = 0;
         $updates['registration_fee'] = 0;
 
-        // Handle Publishing Logic
+        // Auto-approve when tutor publishes
         if (isset($updates['status']) && $updates['status'] === 'published') {
-            if (!$course->is_approved) {
-                // If not previously approved, force to 'submitted'
-                $updates['status'] = 'submitted';
-            }
+            $updates['is_approved'] = true;
         }
 
         $course->update($updates);
@@ -118,6 +115,7 @@ class CourseContentController extends Controller
             'tutor_id' => $tutorId, // Use authenticated tutor's ID
             'level' => 'Beginner', // Default
             'status' => 'draft',
+            'is_approved' => true,
             'type_of_school' => $request->type_of_school,
             'year' => $request->year,
             'subject' => $request->subject,
@@ -132,7 +130,7 @@ class CourseContentController extends Controller
     // Get single course details
     public function showCourse(Request $request, $id)
     {
-        $course = Course::with(['tutor'])->withCount(['enrollments', 'lessons'])->findOrFail($id);
+        $course = Course::withTrashed()->with(['tutor'])->withCount(['enrollments', 'lessons'])->findOrFail($id);
         
         // Add is_enrolled attribute if user is authenticated
         if ($user = $request->user('sanctum')) {
@@ -255,8 +253,8 @@ class CourseContentController extends Controller
                 $param['duration'] = 60; // default 60 minutes
             }
             
-            // Generate Mock Google Meet Link (will be replaced by real one)
-            $param['meeting_link'] = 'https://meet.google.com/' . strtolower(\Illuminate\Support\Str::random(10));
+            // Manual Meeting Link
+            $param['meeting_link'] = $request->meeting_link;
             $param['status'] = 'scheduled';
         } else {
             // For video, pdf, text lessons: auto-assign current time as "publish time"
@@ -301,6 +299,12 @@ class CourseContentController extends Controller
             'content' => $request->content,
             'is_free' => $request->is_free ?? false,
         ];
+
+        if ($request->type === 'live_class') {
+             if ($request->has('meeting_link')) $updates['meeting_link'] = $request->meeting_link;
+             if ($request->has('start_time')) $updates['start_time'] = $request->start_time;
+             if ($request->has('duration')) $updates['duration'] = $request->duration;
+        }
 
         if ($request->hasFile('file')) {
             // Delete old file
@@ -409,21 +413,22 @@ class CourseContentController extends Controller
     {
         $user = $request->user();
         
-        // Get courses via enrollments
-        $courses = Course::whereHas('enrollments', function($query) use ($user) {
-            $query->where('student_id', $user->id);
-        })
-        ->with('tutor') // Include tutor details
-        ->withCount('lessons') // Include lesson count for progress calculation (mock)
-        ->get()
-        ->map(function ($course) use ($user) {
-            // Get enrollment details
-            $enrollment = $course->enrollments()->where('student_id', $user->id)->first();
-            $course->enrollment_status = $enrollment->status;
-            $course->progress = $enrollment->progress;
-            $course->enrollment_date = $enrollment->enrollment_date;
-            return $course;
-        });
+        // Get courses via enrollments (include soft-deleted courses so enrolled students still see them)
+        $courses = Course::withTrashed()
+            ->whereHas('enrollments', function($query) use ($user) {
+                $query->where('student_id', $user->id);
+            })
+            ->with('tutor') // Include tutor details
+            ->withCount('lessons') // Include lesson count for progress calculation (mock)
+            ->get()
+            ->map(function ($course) use ($user) {
+                // Get enrollment details
+                $enrollment = $course->enrollments()->where('student_id', $user->id)->first();
+                $course->enrollment_status = $enrollment->status;
+                $course->progress = $enrollment->progress;
+                $course->enrollment_date = $enrollment->enrollment_date;
+                return $course;
+            });
 
         return response()->json($courses);
     }
@@ -431,7 +436,6 @@ class CourseContentController extends Controller
     public function getPublicCourses(Request $request)
     {
         $query = Course::where('status', 'published')
-            ->where('is_approved', true) // STRICTLY enforce approval
             ->where('is_platform_visible', true)
             ->with('tutor');
 

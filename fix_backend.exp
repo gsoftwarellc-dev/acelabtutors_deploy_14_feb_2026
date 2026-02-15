@@ -1,0 +1,70 @@
+#!/usr/bin/expect -f
+
+set timeout 300
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "cd domains/api.acelabtutors.co.uk/public_html\r"
+
+# 1. Initialize Git if needed
+expect "$ "
+send "git init\r"
+
+expect "$ "
+send "git remote add origin https://github.com/gsoftwarellc-dev/acelab-backend-v2_14feb_2026.git\r"
+# If remote exists, ensure URL is correct
+expect "$ "
+send "git remote set-url origin https://github.com/gsoftwarellc-dev/acelab-backend-v2_14feb_2026.git\r"
+
+# 2. Pull Code
+expect "$ "
+send "git fetch origin main\r"
+
+expect "$ "
+send "git reset --hard origin/main\r"
+
+# 3. Enter Backend Dir (Laravel root)
+expect "$ "
+send "cd backend\r"
+
+# 4. Check .env
+expect "$ "
+send "ls -la .env\r"
+# If .env invalid, user might need to fix it. We can check content.
+# send "cat .env\r"
+
+# 5. Install Dependencies
+expect "$ "
+send "composer install --no-interaction --prefer-dist --optimize-autoloader\r"
+
+# 6. Fix Permissions
+expect "$ "
+send "chmod -R 775 storage bootstrap/cache\r"
+
+# 7. Run Migrations
+expect "$ "
+send "php artisan migrate --force\r"
+
+# 8. Clear Cache
+expect "$ "
+send "php artisan config:clear\r"
+expect "$ "
+send "php artisan cache:clear\r"
+
+# 9. Debug Log
+expect "$ "
+send "tail -n 50 storage/logs/laravel.log\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof

@@ -27,7 +27,7 @@ export default function StudentRegistrationPage() {
                                 Comprehensive tutoring 3 days a week.
                             </p>
                             <p className="text-sm font-semibold text-blue-600 mb-10 bg-blue-50 px-4 py-2 rounded-full inline-block">
-                                11:00 a.m. to 4:00 p.m.
+                                4:00 p.m. to 9:00 p.m.
                             </p>
 
                             <ul className="space-y-4 mb-12 text-left w-full max-w-[240px] mx-auto">
@@ -64,8 +64,11 @@ export default function StudentRegistrationPage() {
                         <div className="h-2 bg-[#38a169] w-full" />
                         <CardContent className="p-10 flex flex-col h-full items-center text-center">
                             <h2 className="text-3xl font-bold text-slate-800 mb-4">Kingdom Children Classes</h2>
-                            <p className="text-slate-500 mb-10 min-h-[48px]">
-                                The free classes are on Saturdays only. Classes are held twice a month.
+                            <p className="text-slate-500 mb-2">
+                                Classes are held every Saturday.
+                            </p>
+                            <p className="text-sm font-semibold text-green-600 mb-10 bg-green-50 px-4 py-2 rounded-full inline-block">
+                                11:00 a.m. to 4:00 p.m.
                             </p>
 
                             <ul className="space-y-4 mb-12 text-left w-full max-w-[200px] mx-auto">

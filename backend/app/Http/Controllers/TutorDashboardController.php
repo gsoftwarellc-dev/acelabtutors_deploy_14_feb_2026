@@ -21,8 +21,8 @@ class TutorDashboardController extends Controller
         
         // Active students (unique enrolled students)
         $activeStudents = Enrollment::whereIn('course_id', $courseIds)
-            ->distinct('user_id')
-            ->count('user_id');
+            ->distinct('student_id')
+            ->count('student_id');
         
         // Total enrollments
         $totalEnrollments = Enrollment::whereIn('course_id', $courseIds)->count();
@@ -58,10 +58,12 @@ class TutorDashboardController extends Controller
         return response()->json($upcomingClasses->map(function($lesson) {
             return [
                 'id' => $lesson->id,
-                'time' => $lesson->start_time->format('M d, H:i'), // Format includes Date now
+                'title' => $lesson->title,
+                'time' => $lesson->start_time->format('M d, H:i'),
                 'course_name' => $lesson->chapter->course->name ?? 'Unknown Course',
                 'meeting_link' => $lesson->meeting_link,
                 'start_time' => $lesson->start_time->toIso8601String(),
+                'duration' => $lesson->duration,
             ];
         }));
     }

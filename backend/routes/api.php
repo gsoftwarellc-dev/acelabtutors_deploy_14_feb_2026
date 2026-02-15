@@ -10,7 +10,7 @@ Route::post('/webhook/stripe', [\App\Http\Controllers\StudentFinanceController::
 // Google OAuth Callback (no auth required)
 Route::get('/google/callback', [\App\Http\Controllers\GoogleAuthController::class, 'callback']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', \App\Http\Middleware\LogUserActivity::class])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
     Route::get('/me', [\App\Http\Controllers\AuthController::class, 'me']);
     
@@ -145,6 +145,7 @@ Route::get('/course-options', [\App\Http\Controllers\CourseOptionsController::cl
 Route::get('/registration-form-options', [\App\Http\Controllers\RegistrationFormOptionController::class, 'index']);
 Route::get('/registration-form-settings/{form_type}', [\App\Http\Controllers\RegistrationFormSettingController::class, 'show']);
 Route::post('/student-registrations', [\App\Http\Controllers\StudentRegistrationController::class, 'store']);
+Route::get('/student-registrations/check-status', [\App\Http\Controllers\StudentRegistrationController::class, 'checkStatus']);
 Route::post('/parent/search-child', [\App\Http\Controllers\ParentDashboardController::class, 'searchChild']);
 
 // Public Checkout Route

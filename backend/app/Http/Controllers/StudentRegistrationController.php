@@ -31,6 +31,7 @@ class StudentRegistrationController extends Controller
             'student_email' => 'nullable|email|max:255',
             'selections' => 'required|array',
             'specific_needs' => 'nullable|string',
+            'requested_year' => 'nullable|string|max:50',
         ]);
 
         $registration = StudentRegistration::create($validated);
@@ -56,6 +57,7 @@ class StudentRegistrationController extends Controller
             'status' => 'sometimes|in:pending,approved,rejected',
             'selections' => 'sometimes|array',
             'specific_needs' => 'nullable|string',
+            'assigned_year' => 'nullable|string|max:50',
         ]);
 
         $registration->update($validated);
@@ -63,6 +65,39 @@ class StudentRegistrationController extends Controller
         return response()->json([
             'message' => 'Registration updated successfully',
             'data' => $registration
+        ]);
+    }
+
+    /**
+     * Check registration status by email (Public Access).
+     */
+    public function checkStatus(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $registration = StudentRegistration::where('type', 'free')
+            ->where(function ($query) use ($request) {
+                $query->where('parent_email', $request->email)
+                      ->orWhere('student_email', $request->email);
+            })
+            ->latest()
+            ->first();
+
+        if (!$registration) {
+            return response()->json([
+                'found' => false,
+                'message' => 'No registration found for this email.',
+            ]);
+        }
+
+        return response()->json([
+            'found' => true,
+            'status' => $registration->status,
+            'assigned_year' => $registration->assigned_year,
+            'requested_year' => $registration->requested_year,
+            'student_name' => $registration->student_name,
         ]);
     }
 

@@ -1,0 +1,47 @@
+#!/usr/bin/expect -f
+
+set timeout 60
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+# --- Backend DB Check ---
+expect "$ "
+send "cd domains/api.acelabtutors.co.uk/public_html\r"
+
+expect "$ "
+send "php artisan tinker --execute=\"echo 'users:' . DB::table('users')->count() . ' courses:' . DB::table('courses')->count() . ' course_options:' . DB::table('course_options')->count() . ' reg_form_options:' . DB::table('registration_form_options')->count() . ' reg_form_settings:' . DB::table('registration_form_settings')->count() . ' settings:' . DB::table('settings')->count() . ' payments:' . DB::table('payments')->count();\"\r"
+
+expect "$ "
+send "echo '---API TEST---'\r"
+
+expect "$ "
+send "curl -s -o /dev/null -w 'API status: %{http_code}' https://api.acelabtutors.co.uk/api/courses\r"
+
+expect "$ "
+send "echo ''\r"
+
+expect "$ "
+send "curl -s -o /dev/null -w 'Frontend status: %{http_code}' https://acelabtutors.co.uk\r"
+
+expect "$ "
+send "echo ''\r"
+
+# --- Frontend Files Check ---
+expect "$ "
+send "cd ~/domains/acelabtutors.co.uk/public_html\r"
+
+expect "$ "
+send "ls server.js .next/server 2>&1 | head -5\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof

@@ -1,0 +1,10 @@
+#!/bin/bash
+DB="backend/database/database.sqlite"
+echo "--- Courses ---"
+sqlite3 $DB "SELECT count(*) FROM courses;"
+echo "--- Payments ---"
+sqlite3 $DB "SELECT count(*) FROM payments;"
+echo "--- Student Registrations ---"
+sqlite3 $DB "SELECT count(*) FROM student_registrations;"
+echo "--- Users Schema ---"
+sqlite3 $DB ".schema users"

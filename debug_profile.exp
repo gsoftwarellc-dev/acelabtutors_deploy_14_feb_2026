@@ -4,19 +4,27 @@ set timeout 30
 set host "45.93.101.65"
 set port "65002"
 set user "u977979652"
-set password "qD*mX8v2%]+|;91"
+set password {4@iVyH5R$XXiv@8}
 
 spawn ssh -p $port $user@$host
 expect {
-    "Are you sure you want to continue connecting" { send "yes\r"; exp_continue }
+    "Are you sure" { send "yes\r"; exp_continue }
     "password:" { send "$password\r" }
 }
 
 expect "$ "
-send "cat .profile\r"
+send "cat ~/.profile\r"
 
 expect "$ "
-send "cat .bashrc\r"
+send "ls -la .cl.selector\r"
+
+expect "$ "
+# Try sourcing profile and checking node
+send "source ~/.profile; which node\r"
+
+expect "$ "
+# Check standard CloudLinux paths
+send "ls /opt/alt/alt-nodejs*/root/usr/bin/node\r"
 
 expect "$ "
 send "exit\r"

@@ -1,0 +1,44 @@
+#!/usr/bin/expect -f
+
+set timeout 300
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set ssh_password {4@iVyH5R$XXiv@8}
+set db_user "u977979652_acelab_user"
+set db_password {4@iVyH5R$XXiv@85}
+set db_name "u977979652_acelab_db"
+set local_file "data_dump.sql"
+set remote_path "domains/api.acelabtutors.co.uk/public_html"
+
+# --- Upload SQL ---
+spawn scp -P $port $local_file $user@$host:$remote_path/
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$ssh_password\r" }
+}
+expect eof
+
+# --- Import SQL ---
+spawn ssh -p $port $user@$host
+expect {
+    "password:" { send "$ssh_password\r" }
+}
+
+expect "$ "
+send "cd $remote_path\r"
+
+expect "$ "
+# Use mysql command. Password prompt handled safely.
+send "mysql -u $db_user -p $db_name < data_dump.sql\r"
+expect "Enter password:"
+send "$db_password\r"
+
+expect "$ "
+# Remove dump file
+send "rm data_dump.sql\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof

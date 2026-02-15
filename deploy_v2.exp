@@ -23,6 +23,9 @@ expect "$ "
 send "git reset --hard origin/main\r"
 
 expect "$ "
+send "cd backend\r"
+
+expect "$ "
 send "composer install --no-interaction --prefer-dist --optimize-autoloader\r"
 
 expect "$ "
@@ -37,8 +40,18 @@ send "php artisan route:cache\r"
 
 # --- Frontend Deployment (acelabtutors.co.uk) ---
 expect "$ "
-# Navigate from api/.../public_html to acelabtutors/.../public_html
-send "cd ../../acelabtutors.co.uk/public_html\r"
+# Navigate to home then to frontend domain
+send "cd ~/domains/acelabtutors.co.uk/public_html\r"
+
+expect "$ "
+# Initialize git if missing
+send "git init\r"
+
+expect "$ "
+send "git remote add origin https://github.com/gsoftwarellc-dev/acelabtutors_deploy_14_feb_2026.git\r"
+# If remote exists, set url to be sure
+expect "$ "
+send "git remote set-url origin https://github.com/gsoftwarellc-dev/acelabtutors_deploy_14_feb_2026.git\r"
 
 expect "$ "
 send "git fetch origin main\r"
@@ -47,29 +60,18 @@ expect "$ "
 send "git reset --hard origin/main\r"
 
 expect "$ "
-# Navigate to frontend folder within public_html (since repo has frontend/backend folders?)
-# Wait, let's check repo structure in public_html
-# The repo has `frontend` and `backend` folders at root.
-# On server (acelabtutors.co.uk), if we pulled the repo to public_html, 
-# then `public_html/frontend` exists.
-# On server (api.acelabtutors.co.uk), if we pulled the repo to public_html, 
-# then `public_html/backend` exists.
-# AND `public_html/frontend` also exists there (since it's the same repo).
-# Correct?
-# If so, for frontend deploy, we must `cd frontend`.
-# For backend deploy, we must `cd backend`.
-#
-# Let's verify:
-# In Backend section above, I did `cd domains/api.../public_html`.
-# Then `git reset...`.
-# Then `composer install`... WAIT. `composer.json` is in `backend/`.
-# So I need to `cd backend` inside `public_html`!
-#
-# Corrected Path Logic:
-# Backend: domains/api.../public_html -> git reset -> cd backend -> composer/artisan.
-# Frontend: domains/acelabtutors.../public_html -> git reset -> cd frontend -> npm install/build.
-
+# Now frontend folder should exist
 send "cd frontend\r"
+
+expect "$ "
+# Add Node.js 22 to PATH
+send "export PATH=/opt/alt/alt-nodejs22/root/usr/bin:\$PATH\r"
+
+expect "$ "
+send "node -v\r"
+
+expect "$ "
+send "npm -v\r"
 
 expect "$ "
 send "npm install\r"

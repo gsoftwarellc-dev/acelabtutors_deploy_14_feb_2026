@@ -5,7 +5,7 @@ import Link from "next/link"
 import { StatCard } from "@/components/shared/stat-card"
 import { Clock, CheckCircle, Calendar, BookOpen, FileText, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import GoogleConnectButton from "@/components/GoogleConnectButton"
+
 
 interface UpcomingClass {
     id: number
@@ -118,7 +118,7 @@ export default function StudentDashboard() {
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-semibold text-slate-900">Upcoming Classes</h3>
                             </div>
-                            <GoogleConnectButton />
+
                         </div>
                         <div className="divide-y divide-slate-100">
                             {upcomingClasses.map((session) => {
@@ -134,7 +134,7 @@ export default function StudentDashboard() {
                                                 <h4 className="font-bold text-slate-900">{session.title}</h4>
                                                 <p className="text-sm text-slate-500">{session.course_name} • {session.tutor_name}</p>
                                                 <div className="flex items-center text-sm font-medium text-slate-600 mt-1">
-                                                    <Clock size={14} className="mr-1 text-slate-400" /> {time}
+                                                    <Clock size={14} className="mr-1 text-slate-400" /> {time} (UK)
                                                 </div>
                                             </div>
                                         </div>

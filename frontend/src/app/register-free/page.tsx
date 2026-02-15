@@ -30,6 +30,7 @@ export default function RegisterFreePage() {
         studentName: "",
         dob: "",
         studentEmail: "",
+        requestedYear: "",
         selections: {} as Record<string, string[]>,
         specificNeeds: "",
         confirm: false
@@ -99,6 +100,7 @@ export default function RegisterFreePage() {
                 student_name: formData.studentName,
                 student_dob: formData.dob,
                 student_email: formData.studentEmail,
+                requested_year: formData.requestedYear,
                 selections: formData.selections,
                 specific_needs: formData.specificNeeds
             })
@@ -251,6 +253,23 @@ export default function RegisterFreePage() {
                                         value={formData.studentEmail}
                                         onChange={(e) => setFormData({ ...formData, studentEmail: e.target.value })}
                                     />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="requestedYear" className="text-xs font-bold text-slate-700">Preferred Year Group *</Label>
+                                    <select
+                                        id="requestedYear"
+                                        className="w-full h-10 rounded-md border border-slate-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-3 text-sm bg-white"
+                                        required
+                                        value={formData.requestedYear}
+                                        onChange={(e) => setFormData({ ...formData, requestedYear: e.target.value })}
+                                    >
+                                        <option value="">Select a year group</option>
+                                        <option value="YEAR 8">Year 8</option>
+                                        <option value="YEAR 9">Year 9</option>
+                                        <option value="YEAR 10">Year 10</option>
+                                        <option value="YEAR 11">Year 11</option>
+                                    </select>
                                 </div>
                             </div>
                         </section>

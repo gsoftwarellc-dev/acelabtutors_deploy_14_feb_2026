@@ -312,35 +312,46 @@ class AdminFinanceController extends Controller
 
     public function getConnectUrl()
     {
-        $clientId = env('STRIPE_CLIENT_ID');
+        $clientId = DB::table('settings')->where('key', 'STRIPE_CLIENT_ID')->value('value') ?? env('STRIPE_CLIENT_ID');
+        
         if (!$clientId) {
             return response()->json(['error' => 'Stripe Client ID not configured.'], 500);
         }
 
         // Redirect to frontend page
-        $redirectUri = env('NEXT_PUBLIC_APP_URL', 'http://localhost:3000') . '/admin/finance';
+        $redirectUri = config('app.url', 'http://localhost:3000') . '/admin/finance';
         
         $url = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id={$clientId}&scope=read_write&redirect_uri={$redirectUri}";
 
         return response()->json(['url' => $url]);
     }
 
+    private function updateSettings(array $data)
+    {
+        foreach ($data as $key => $value) {
+            DB::table('settings')->updateOrInsert(
+                ['key' => $key],
+                ['value' => $value, 'updated_at' => now()]
+            );
+        }
+
+        // Also try to update .env as backup
+        try {
+            $this->updateEnv($data);
+        } catch (\Exception $e) {
+            Log::warning('Failed to update .env: ' . $e->getMessage());
+        }
+    }
+
     public function exchangeCode(Request $request)
     {
         $request->validate(['code' => 'required|string']);
         
-        $secretKey = env('STRIPE_SECRET'); // We need the platform's secret key to exchange the code?
-                                           // actually for Standard accounts, we exchange the code using our platform's secret key
-        
-        // Wait, if the user IS the admin, they are connecting THEIR account TO this app.
-        // This app (the codebase) IS the software.
-        // This flow usually implies there is a "Platform" (SaaS) and "Users".
-        // If this is a self-hosted single-tenant app, "Connect" is slightly odd unless it's a "Standard" OAuth into a specific Platform App (like "Wordpress for Stripe").
-        // Assuming the user has created a generic "Platform" in Stripe Dashboard just to get a Client ID.
-        
+        $secretKey = $this->getStripeSecret();
+
         try {
              $response = Http::asForm()->post('https://connect.stripe.com/oauth/token', [
-                'client_secret' => env('STRIPE_SECRET'), // The Platform's Secret Key
+                'client_secret' => $secretKey,
                 'code' => $request->code,
                 'grant_type' => 'authorization_code',
             ]);
@@ -348,30 +359,13 @@ class AdminFinanceController extends Controller
             if ($response->successful()) {
                 $data = $response->json();
                 
-                // For a single-tenant app acting as its own platform:
-                // We save these credentials to be used for future API calls.
-                // $data['stripe_user_id'] is the connected account ID.
-                $this->updateEnv([
-                    'STRIPE_ACCOUNT_ID' => $data['stripe_user_id'],
-                    // If it's a Standard account, we might just use the account_id with our platform key?
-                    // Or we get an access_token?
-                    // Standard accounts: response has 'access_token', 'refresh_token', 'stripe_publishable_key', 'stripe_user_id'
+                $settings = [
                     'STRIPE_KEY' => $data['stripe_publishable_key'],
-                    'STRIPE_ACCESS_TOKEN' => $data['access_token'], // Save this if we want to act AS them
-                    // 'STRIPE_SECRET' => ... standard flow gives an access token, use that instead of SK?
-                ]);
-                
-                // IMPORTANT: In standard Connect, the access_token REPLACES the secret key for API calls on behalf of that user.
-                // We should probably save it as STRIPE_SECRET or a new env var and update getStripeSecret to prefer it.
-                
-                // Let's save as STRIPE_SECRET for simplicity in this single-tenant context, 
-                // OR add logic to getStripeSecret to use STRIPE_ACCESS_TOKEN if present.
-                
-                 $this->updateEnv([
-                    'STRIPE_KEY' => $data['stripe_publishable_key'],
-                    'STRIPE_SECRET' => $data['access_token'], // Use the access token as the secret for API calls
+                    'STRIPE_SECRET' => $data['access_token'],
                     'STRIPE_ACCOUNT_ID' => $data['stripe_user_id'],
-                ]);
+                ];
+                
+                $this->updateSettings($settings);
 
                 return response()->json(['success' => true]);
             } else {
@@ -387,27 +381,31 @@ class AdminFinanceController extends Controller
     public function storeStripeConfig(Request $request)
     {
         $request->validate([
-            'client_id' => 'required|string|starts_with:ca_',
+            'client_id' => 'nullable|string|starts_with:ca_',
             'secret_key' => 'nullable|string|starts_with:sk_',
             'publishable_key' => 'nullable|string|starts_with:pk_',
             'webhook_secret' => 'nullable|string|starts_with:whsec_',
         ]);
 
-        $data = ['STRIPE_CLIENT_ID' => $request->client_id];
+        $settings = [];
+
+        if ($request->filled('client_id')) {
+            $settings['STRIPE_CLIENT_ID'] = $request->client_id;
+        }
         
         if ($request->filled('secret_key')) {
-            $data['STRIPE_SECRET'] = $request->secret_key;
+            $settings['STRIPE_SECRET'] = $request->secret_key;
         }
         
         if ($request->filled('publishable_key')) {
-            $data['STRIPE_KEY'] = $request->publishable_key;
+            $settings['STRIPE_KEY'] = $request->publishable_key;
         }
 
         if ($request->filled('webhook_secret')) {
-            $data['STRIPE_WEBHOOK_SECRET'] = $request->webhook_secret;
+            $settings['STRIPE_WEBHOOK_SECRET'] = $request->webhook_secret;
         }
 
-        $this->updateEnv($data);
+        $this->updateSettings($settings);
 
         return response()->json(['success' => true]);
     }

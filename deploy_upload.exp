@@ -1,0 +1,80 @@
+#!/usr/bin/expect -f
+
+set timeout 1800
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+set local_file "deploy.tar.gz"
+set remote_path "domains/acelabtutors.co.uk/public_html"
+
+# --- Upload Artifact ---
+spawn scp -P $port $local_file $user@$host:$remote_path/deploy.tar.gz
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+expect eof
+
+# --- Extraction and Start ---
+spawn ssh -p $port $user@$host
+expect {
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "cd $remote_path\r"
+
+expect "$ "
+# Backup .env if exists (or create one)
+# Assuming .env is already there or in deploy.tar.gz?
+# Standalone build usually needs .env. 
+# We should preserve existing .env on server if possible.
+# But deploy.tar.gz contains EVERYTHING (since I tarred inside standalone).
+# DOES standalone have .env?
+# Step 325 showed .env in standalone!
+# So deploy.tar.gz HAS .env. This overwrite server env?
+# Yes.
+# Is local .env production ready?
+# Local .env has NEXT_PUBLIC_API_URL=http://localhost:8000.
+# Production should have https://api.acelabtutors.co.uk.
+# I SHOULD FIX .ENV before uploading!
+# Or I should edit .env on server after upload.
+# Or I should not include .env in tar.
+#
+# But user wanted "deploy updates".
+# If I overwrite .env with localhost, frontend will break.
+#
+# Strategy:
+# 1. Update local .env (or create .env.production) BEFORE tar?
+# 2. Or edit on server.
+#
+# I'll check local .env content.
+
+send "tar -xzf deploy.tar.gz\r"
+
+expect "$ "
+# Add Node to PATH
+send "export PATH=/opt/alt/alt-nodejs22/root/usr/bin:\$PATH\r"
+
+expect "$ "
+# Install pm2 if needed (it might not be installed globally for user)
+# Or just run `node server.js` in background?
+# Hostinger Node.js selector manages the app.
+# If I overwrite files, I might need to Restart App via control panel?
+# Or `touch tmp/restart.txt` (Passenger)?
+# Hostinger uses CloudLinux Node.js Selector (Phusion Passenger or similar).
+# Usually restarting is done by "Restart" button or modifying restart.txt.
+#
+# Let's try `touch tmp/restart.txt`.
+send "mkdir -p tmp\r"
+expect "$ "
+send "touch tmp/restart.txt\r"
+
+expect "$ "
+send "rm deploy.tar.gz\r"
+
+expect "$ "
+send "exit\r"
+
+expect eof

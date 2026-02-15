@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import GoogleConnectButton from "@/components/GoogleConnectButton"
+
 import {
     Dialog,
     DialogContent,
@@ -112,12 +112,11 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
         // Live Class fields
         date: "",
         time: "",
-        duration: "60"
+        duration: "60",
+        meeting_link: ""
     })
 
-    // Google Meet Integration
-    const [isGoogleConnected, setIsGoogleConnected] = useState(false)
-    const [meetingType, setMeetingType] = useState<'instant' | 'scheduled'>('scheduled')
+
 
     const fetchCurriculum = async () => {
         try {
@@ -253,7 +252,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
         setLessonType('video') // Default to video, but user will choose
         setLessonData({
             title: "", content: "", file: null, is_free: false,
-            date: "", time: "", duration: "60"
+            date: "", time: "", duration: "60", meeting_link: ""
         })
     }
 
@@ -296,11 +295,10 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
             formData.append('file', lessonData.file)
         } else if (lessonType === 'live_class') {
             // For scheduled meetings, add date/time
-            if (meetingType === 'scheduled') {
-                const startDateTime = `${lessonData.date}T${lessonData.time}:00`
-                formData.append('start_time', startDateTime)
-            }
+            const startDateTime = `${lessonData.date}T${lessonData.time}:00`
+            formData.append('start_time', startDateTime)
             formData.append('duration', lessonData.duration)
+            formData.append('meeting_link', lessonData.meeting_link)
         }
 
         try {
@@ -321,43 +319,8 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
             const createdLesson = await res.json()
 
             // If it's a live class and Google is connected, create real Google Meet link
-            if (lessonType === 'live_class' && isGoogleConnected) {
-                try {
-                    const meetPayload: any = {
-                        meeting_type: meetingType
-                    }
+            // REMOVED GOOGLE MEET AUTO GENERATION
 
-                    if (meetingType === 'scheduled') {
-                        meetPayload.start_time = `${lessonData.date} ${lessonData.time}:00`
-                        meetPayload.duration = parseInt(lessonData.duration)
-                        meetPayload.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-                    }
-
-                    const meetRes = await fetch(`${apiUrl}/api/lessons/${createdLesson.id}/create-google-meet`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(meetPayload)
-                    })
-
-                    if (!meetRes.ok) {
-                        console.error('Failed to create Google Meet: meeting creation failed')
-                    } else {
-                        const meetData = await meetRes.json()
-
-                        // Auto-open the Google Meet link in a new window
-                        if (meetData.success && meetData.meeting_link) {
-                            window.open(meetData.meeting_link, '_blank')
-                            // alert('Google Meet created successfully! The meeting link has been opened in a new tab.')
-                        }
-                    }
-                } catch (meetError) {
-                    console.error('Error creating Google Meet:', meetError)
-                    // alert('Lesson created but there was an error generating the Google Meet link. Please try again.')
-                }
-            }
 
             setActiveChapterId(null)
             fetchCurriculum()
@@ -367,39 +330,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
         }
     }
 
-    const handleRegenerateMeet = async (lessonId: number) => {
-        try {
-            const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
-            setLoading(true)
-            const res = await fetch(`${apiUrl}/api/lessons/${lessonId}/create-google-meet`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    meeting_type: 'instant' // Default to instant for regeneration
-                })
-            })
-
-            if (res.ok) {
-                const data = await res.json()
-                if (data.success && data.meeting_link) {
-                    window.open(data.meeting_link, '_blank')
-                    fetchCurriculum()
-                }
-            } else {
-                const error = await res.json()
-                alert(`Failed to regenerate link: ${error.message || 'Unknown error'}`)
-            }
-        } catch (error) {
-            console.error(error)
-        } finally {
-            setLoading(false)
-        }
-    }
 
     const confirmDeleteLesson = (lessonId: number, chapterId: number) => {
         setItemToDelete({ id: lessonId, type: 'lesson', chapterId })
@@ -590,19 +521,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
                                                         </Button>
                                                     )}
 
-                                                    {isGoogleConnected && (!lesson.meeting_link || !lesson.meeting_link.includes('google.com') || lesson.meeting_link.includes('random')) && (
-                                                        <Button
-                                                            size="sm"
-                                                            variant="ghost"
-                                                            className="h-8 text-[10px] text-slate-500 hover:text-blue-600 underline"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleRegenerateMeet(lesson.id);
-                                                            }}
-                                                        >
-                                                            Regenerate real link
-                                                        </Button>
-                                                    )}
+
                                                 </div>
                                             )}
 
@@ -756,66 +675,41 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
                                                         </div>
                                                     )}
 
+                                                    {/* Live Class Fields */}
                                                     {lessonType === 'live_class' && (
                                                         <div className="space-y-4">
-                                                            {/* Google Account Connection */}
-                                                            <GoogleConnectButton onConnectionChange={setIsGoogleConnected} />
+                                                            <div className="grid gap-2">
+                                                                <Label>Google Meet Link</Label>
+                                                                <Input
+                                                                    value={lessonData.meeting_link}
+                                                                    onChange={e => setLessonData({ ...lessonData, meeting_link: e.target.value })}
+                                                                    placeholder="https://meet.google.com/..."
+                                                                />
+                                                            </div>
 
-                                                            {/* Meeting Type Toggle */}
-                                                            {isGoogleConnected && (
-                                                                <div>
-                                                                    <Label className="mb-2 block">Meeting Type</Label>
-                                                                    <div className="flex gap-2">
-                                                                        <Button
-                                                                            type="button"
-                                                                            size="sm"
-                                                                            variant={meetingType === 'instant' ? 'default' : 'outline'}
-                                                                            onClick={() => setMeetingType('instant')}
-                                                                            className="flex-1"
-                                                                        >
-                                                                            Instant Meeting
-                                                                        </Button>
-                                                                        <Button
-                                                                            type="button"
-                                                                            size="sm"
-                                                                            variant={meetingType === 'scheduled' ? 'default' : 'outline'}
-                                                                            onClick={() => setMeetingType('scheduled')}
-                                                                            className="flex-1"
-                                                                        >
-                                                                            Scheduled Meeting
-                                                                        </Button>
-                                                                    </div>
+                                                            <div className="grid grid-cols-2 gap-4">
+                                                                <div className="grid gap-2">
+                                                                    <Label>Date</Label>
+                                                                    <Input type="date" value={lessonData.date} onChange={e => setLessonData({ ...lessonData, date: e.target.value })} />
                                                                 </div>
-                                                            )}
+                                                                <div className="grid gap-2">
+                                                                    <Label>Time (UK)</Label>
 
-                                                            {/* Date/Time fields - only show if scheduled */}
-                                                            {meetingType === 'scheduled' && (
-                                                                <>
-                                                                    <div className="grid grid-cols-2 gap-4">
-                                                                        <div className="grid gap-2">
-                                                                            <Label>Date</Label>
-                                                                            <Input type="date" value={lessonData.date} onChange={e => setLessonData({ ...lessonData, date: e.target.value })} />
-                                                                        </div>
-                                                                        <div className="grid gap-2">
-                                                                            <Label>Time</Label>
-                                                                            <Input type="time" value={lessonData.time} onChange={e => setLessonData({ ...lessonData, time: e.target.value })} />
-                                                                        </div>
-                                                                        <div className="grid gap-2 col-span-2">
-                                                                            <Label>Duration</Label>
-                                                                            <Select value={lessonData.duration} onValueChange={v => setLessonData({ ...lessonData, duration: v })}>
-                                                                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                                                                <SelectContent>
-                                                                                    <SelectItem value="30">30 Min</SelectItem>
-                                                                                    <SelectItem value="60">1 Hour</SelectItem>
-                                                                                    <SelectItem value="90">1.5 Hours</SelectItem>
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        </div>
-                                                                    </div>
+                                                                    <Input type="time" value={lessonData.time} onChange={e => setLessonData({ ...lessonData, time: e.target.value })} />
+                                                                </div>
+                                                                <div className="grid gap-2 col-span-2">
+                                                                    <Label>Duration</Label>
+                                                                    <Select value={lessonData.duration} onValueChange={v => setLessonData({ ...lessonData, duration: v })}>
+                                                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                                                        <SelectContent>
+                                                                            <SelectItem value="30">30 Min</SelectItem>
+                                                                            <SelectItem value="60">1 Hour</SelectItem>
+                                                                            <SelectItem value="90">1.5 Hours</SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                </div>
+                                                            </div>
 
-
-                                                                </>
-                                                            )}
                                                         </div>
                                                     )}
 
@@ -838,7 +732,8 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
                         </div>
                     ))}
                 </div>
-            )}
+            )
+            }
 
             <AlertDialog open={!!itemToDelete} onOpenChange={(open) => !open && setItemToDelete(null)}>
                 <AlertDialogContent>
@@ -958,6 +853,6 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     )
 }

@@ -69,7 +69,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return items.some(item => item.id === id)
     }
 
-    const total = items.reduce((sum, item) => sum + item.price + (item.registrationFee || 0), 0)
+    const total = items.reduce((sum, item) => sum + Number(item.price) + Number(item.registrationFee || 0), 0)
     const cartCount = items.length
 
     return (
