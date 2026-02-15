@@ -67,8 +67,9 @@ export default function AttendanceHistoryPage() {
 
         try {
             const token = localStorage.getItem('token')
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/admin/users/${searchId}/performance`,
+                `${apiUrl}/api/admin/users/${searchId}/performance`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`

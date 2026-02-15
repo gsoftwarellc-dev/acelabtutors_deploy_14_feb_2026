@@ -29,7 +29,8 @@ export default function PerformancePage() {
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem('token')
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/admin/users`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const response = await fetch(`${apiUrl}/api/admin/users`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

@@ -7,7 +7,7 @@ import GoogleConnectButton from "@/components/GoogleConnectButton"
 
 export default function TutorProfile() {
     const { user, updateUser } = useAuth()
-    const [profileImage, setProfileImage] = useState(user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `http://localhost:8000${user.avatar}`) : "/default-avatar.png")
+    const [profileImage, setProfileImage] = useState(user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${user.avatar}`) : "/default-avatar.png")
     const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")

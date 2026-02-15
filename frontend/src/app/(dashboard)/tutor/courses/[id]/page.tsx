@@ -90,7 +90,8 @@ export default function TutorCourseDetailPage() {
         const fetchCourse = async () => {
             try {
                 const token = localStorage.getItem('token')
-                const response = await fetch(`http://localhost:8000/api/courses/${id}`, {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const response = await fetch(`${apiUrl}/api/courses/${id}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
@@ -121,7 +122,8 @@ export default function TutorCourseDetailPage() {
             const fetchStudents = async () => {
                 try {
                     const token = localStorage.getItem('token')
-                    const response = await fetch(`http://localhost:8000/api/courses/${id}/students`, {
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                    const response = await fetch(`${apiUrl}/api/courses/${id}/students`, {
                         headers: {
                             'Authorization': `Bearer ${token}`,
                             'Accept': 'application/json'
@@ -163,7 +165,8 @@ export default function TutorCourseDetailPage() {
 
         try {
             const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:8000/api/courses/${id}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/courses/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -190,7 +193,8 @@ export default function TutorCourseDetailPage() {
     const deleteCourse = async () => {
         try {
             const token = localStorage.getItem('token')
-            await fetch(`http://localhost:8000/api/courses/${id}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            await fetch(`${apiUrl}/api/courses/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -221,7 +225,8 @@ export default function TutorCourseDetailPage() {
         setIsSavingDetails(true)
         try {
             const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:8000/api/courses/${id}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/courses/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

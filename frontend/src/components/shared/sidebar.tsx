@@ -45,7 +45,8 @@ export function Sidebar({ role }: SidebarProps) {
             const token = localStorage.getItem('token')
             if (!token) return
 
-            const res = await fetch('http://localhost:8000/api/messages/unread-count', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/messages/unread-count`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'

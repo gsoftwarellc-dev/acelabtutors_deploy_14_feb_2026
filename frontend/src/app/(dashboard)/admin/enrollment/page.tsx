@@ -51,7 +51,8 @@ export default function CourseEnrollmentPage() {
     const fetchCourses = async () => {
         try {
             const token = localStorage.getItem('token')
-            const response = await fetch('http://localhost:8000/api/admin/courses', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const response = await fetch(`${apiUrl}/api/admin/courses`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -76,7 +77,8 @@ export default function CourseEnrollmentPage() {
         try {
             const token = localStorage.getItem('token')
             // Fetch user detail using existing endpoint
-            const response = await fetch(`http://localhost:8000/api/admin/users/${searchId}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const response = await fetch(`${apiUrl}/api/admin/users/${searchId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -105,7 +107,8 @@ export default function CourseEnrollmentPage() {
         setEnrolling(true)
         try {
             const token = localStorage.getItem('token')
-            const response = await fetch(`http://localhost:8000/api/admin/users/${student.id}/enroll`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const response = await fetch(`${apiUrl}/api/admin/users/${student.id}/enroll`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -119,7 +122,8 @@ export default function CourseEnrollmentPage() {
             if (response.ok) {
                 alert("Student successfully enrolled!")
                 // Refresh student data to show new enrollment
-                const refreshRes = await fetch(`http://localhost:8000/api/admin/users/${student.id}`, {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const refreshRes = await fetch(`${apiUrl}/api/admin/users/${student.id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
                 if (refreshRes.ok) {
@@ -149,7 +153,8 @@ export default function CourseEnrollmentPage() {
 
         try {
             const token = localStorage.getItem('token')
-            const response = await fetch(`http://localhost:8000/api/admin/users/${student.id}/courses/${courseId}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const response = await fetch(`${apiUrl}/api/admin/users/${student.id}/courses/${courseId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -158,7 +163,8 @@ export default function CourseEnrollmentPage() {
 
             if (response.ok) {
                 // Refresh student data
-                const refreshRes = await fetch(`http://localhost:8000/api/admin/users/${student.id}`, {
+                const refreshApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const refreshRes = await fetch(`${refreshApiUrl}/api/admin/users/${student.id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
                 if (refreshRes.ok) {

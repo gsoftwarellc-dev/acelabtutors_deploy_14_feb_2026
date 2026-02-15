@@ -37,7 +37,8 @@ export default function TutorCoursesPage() {
         try {
             const token = localStorage.getItem('token')
             const query = currentFilter === 'trash' ? '?filter=trash' : ''
-            const response = await fetch(`http://localhost:8000/api/courses${query}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const response = await fetch(`${apiUrl}/api/courses${query}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -59,10 +60,11 @@ export default function TutorCoursesPage() {
 
         try {
             const token = localStorage.getItem('token')
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
             const isTrash = currentFilter === 'trash'
             const url = isTrash
-                ? `http://localhost:8000/api/courses/${courseToDelete}/force`
-                : `http://localhost:8000/api/courses/${courseToDelete}`
+                ? `${apiUrl}/api/courses/${courseToDelete}/force`
+                : `${apiUrl}/api/courses/${courseToDelete}`
 
             await fetch(url, {
                 method: 'DELETE',
@@ -82,7 +84,8 @@ export default function TutorCoursesPage() {
     const handleRestoreCourse = async (courseId: number) => {
         try {
             const token = localStorage.getItem('token')
-            await fetch(`http://localhost:8000/api/courses/${courseId}/restore`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            await fetch(`${apiUrl}/api/courses/${courseId}/restore`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

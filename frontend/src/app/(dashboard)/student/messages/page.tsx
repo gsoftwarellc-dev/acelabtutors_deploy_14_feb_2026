@@ -14,7 +14,8 @@ export default function StudentMessagesPage() {
     const fetchContacts = async () => {
         try {
             const token = localStorage.getItem('token')
-            const response = await fetch('http://localhost:8000/api/messages/contacts', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const response = await fetch(`${apiUrl}/api/messages/contacts`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'

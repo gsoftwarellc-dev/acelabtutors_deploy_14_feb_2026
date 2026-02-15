@@ -28,7 +28,8 @@ export default function CourseApprovalsPage() {
     const fetchCourses = async () => {
         setLoading(true)
         try {
-            const res = await fetch('http://localhost:8000/api/admin/courses/submitted')
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/admin/courses/submitted`)
             if (res.ok) {
                 const data = await res.json()
                 setCourses(data)
@@ -47,7 +48,8 @@ export default function CourseApprovalsPage() {
     const handleApprove = async (id: number) => {
         setActionLoading(id)
         try {
-            const res = await fetch(`http://localhost:8000/api/admin/courses/${id}/approve`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/admin/courses/${id}/approve`, {
                 method: 'POST'
             })
             if (res.ok) {
@@ -65,7 +67,8 @@ export default function CourseApprovalsPage() {
 
         setActionLoading(id)
         try {
-            const res = await fetch(`http://localhost:8000/api/admin/courses/${id}/reject`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/admin/courses/${id}/reject`, {
                 method: 'POST'
             })
             if (res.ok) {

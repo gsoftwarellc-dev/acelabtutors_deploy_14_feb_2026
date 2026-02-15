@@ -26,7 +26,8 @@ export default function ClassHistoryPage() {
     const fetchClassHistory = async () => {
         try {
             const token = localStorage.getItem('token')
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/student/dashboard`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/student/dashboard`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

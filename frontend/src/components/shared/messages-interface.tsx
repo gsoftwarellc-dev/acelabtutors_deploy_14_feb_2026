@@ -58,7 +58,8 @@ export default function MessagesInterface({ contacts }: MessagesProps) {
             const token = localStorage.getItem('token')
             const currentUserId = parseInt(localStorage.getItem('userId') || '0')
 
-            const res = await fetch(`http://localhost:8000/api/messages/${userId}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/messages/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -138,7 +139,8 @@ export default function MessagesInterface({ contacts }: MessagesProps) {
 
         try {
             const token = localStorage.getItem('token')
-            const res = await fetch('http://localhost:8000/api/messages', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/messages`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -194,10 +196,10 @@ export default function MessagesInterface({ contacts }: MessagesProps) {
                             key={contact.id}
                             onClick={() => setSelectedContact(contact)}
                             className={`p-4 flex items-center space-x-3 cursor-pointer hover:bg-slate-50 transition-colors ${selectedContact?.id === contact.id
-                                    ? "bg-blue-100"
-                                    : contact.last_message_sender_id === contact.id
-                                        ? "bg-blue-50"
-                                        : ""
+                                ? "bg-blue-100"
+                                : contact.last_message_sender_id === contact.id
+                                    ? "bg-blue-50"
+                                    : ""
                                 }`}
                         >
                             <div className="relative">

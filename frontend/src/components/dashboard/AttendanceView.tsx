@@ -49,7 +49,8 @@ export default function AttendanceView({ courseId }: AttendanceViewProps) {
             const token = localStorage.getItem('token')
             const dateStr = format(date, 'yyyy-MM-dd')
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/courses/${courseId}/attendance?date=${dateStr}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const res = await fetch(`${apiUrl}/api/courses/${courseId}/attendance?date=${dateStr}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

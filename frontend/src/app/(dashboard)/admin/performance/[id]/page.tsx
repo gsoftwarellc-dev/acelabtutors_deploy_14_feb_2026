@@ -69,8 +69,9 @@ export default function UserPerformancePage() {
     const fetchPerformance = async () => {
         try {
             const token = localStorage.getItem('token')
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/admin/users/${userId}/performance`,
+                `${apiUrl}/api/admin/users/${userId}/performance`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
