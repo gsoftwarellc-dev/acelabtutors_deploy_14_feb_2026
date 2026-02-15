@@ -54,7 +54,7 @@ function CoursesContent() {
         const fetchOptions = async () => {
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-                const res = await fetch(`${apiUrl}/api/public/courses?${params.toString()}`)
+                const res = await fetch(`${apiUrl}/api/course-options`)
                 if (res.ok) {
                     const data = await res.json()
                     setFilterOptions({
