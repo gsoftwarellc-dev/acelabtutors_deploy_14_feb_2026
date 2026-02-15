@@ -58,7 +58,7 @@ export function Hero() {
                     <p className="mx-auto max-w-2xl text-lg md:text-xl text-slate-600 leading-relaxed animate-fade-in-up animation-delay-400">
                         Expert tutoring tailored to your learning style. Master difficult subjects,
                         <span className="font-semibold text-primary"> ace your exams</span>, and build
-                        <span className="font-semibold text-secondary"> confidence</span> for the future.
+                        <span className="font-semibold text-slate-900"> confidence</span> for the future.
                     </p>
 
                     {/* CTA Buttons */}
