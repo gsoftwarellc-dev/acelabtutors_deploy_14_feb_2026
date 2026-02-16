@@ -35,7 +35,7 @@ export function Navbar() {
         { href: "/", label: "Home" },
         { href: "/student-registration", label: "Student Registration" },
         { href: "/free-class", label: "Free Class" },
-        { href: "/courses", label: "Courses" },
+        { href: "/courses", label: "Year" },
         { href: "/tutors", label: "Meet Our Tutors" },
         { href: "/contact", label: "Contact" },
     ];
@@ -91,7 +91,7 @@ export function Navbar() {
                                 <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 overflow-hidden border border-slate-200 shadow-sm hover:bg-transparent">
                                     <Avatar className="h-full w-full">
                                         <AvatarImage
-                                            src={user.avatar ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${user.avatar}` : ''}
+                                            src={user.avatar ? `${process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'}${user.avatar}` : ''}
                                             alt={user.name}
                                             className="object-cover"
                                         />

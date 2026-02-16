@@ -1,0 +1,17 @@
+set timeout 120
+spawn ssh -p 65002 u977979652@45.93.101.65
+expect "password:"
+send "Acelab#123\r"
+expect "$ "
+send "cat domains/acelabtutors.co.uk/public_html/.next/BUILD_ID\r"
+expect "$ "
+send "grep \"Year\" domains/acelabtutors.co.uk/public_html/.next/server/app-path-routes-manifest.json | head -n 5\r"
+expect "$ "
+send "ls -la domains/acelabtutors.co.uk/public_html/.htaccess\r"
+expect "$ "
+send "cat domains/acelabtutors.co.uk/public_html/.htaccess\r"
+expect "$ "
+send "ls -d domains/acelabtutors.co.uk/public_html_old*\r"
+expect "$ "
+send "exit\r"
+expect eof

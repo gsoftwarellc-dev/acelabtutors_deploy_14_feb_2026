@@ -30,7 +30,7 @@ export default function TutorLessonPreviewPage() {
         const fetchLesson = async () => {
             try {
                 const token = localStorage.getItem('token')
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 // Reusing the same endpoint, assuming public/tutor access or creating a specific one if needed.
                 // Since this is a "preview", we might need a specific endpoint if the public one is restricted.
                 // However, tutors usually have broad access. Let's try the public or generic one first.
@@ -82,7 +82,7 @@ export default function TutorLessonPreviewPage() {
     }
 
     const renderContent = () => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
         let fileUrl: string | null = null;
 
         if (lesson.type === 'video') {

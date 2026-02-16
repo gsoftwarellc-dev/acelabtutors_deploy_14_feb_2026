@@ -81,7 +81,7 @@ export default function ParentReportsPage() {
                 </div>
                 <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-slate-500">Active Courses</span>
+                        <span className="text-sm font-medium text-slate-500">Active Year</span>
                         <TrendingUp className="text-green-500" size={20} />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">{childEnrollments.filter(e => e.status === 'active').length}</div>

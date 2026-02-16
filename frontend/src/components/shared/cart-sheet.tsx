@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 export function CartSheet() {
     const { items, removeItem, total, isCartOpen, setIsCartOpen, clearCart } = useCart()
     const [isCheckingOut, setIsCheckingOut] = useState(false)
+    console.log("CartSheet v2 loaded")
     const [buyerName, setBuyerName] = useState("")
     const [buyerPhone, setBuyerPhone] = useState("")
     const router = useRouter()
@@ -30,7 +31,7 @@ export function CartSheet() {
             //     return
             // }
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
             const headers: HeadersInit = {
                 'Content-Type': 'application/json',
@@ -89,7 +90,7 @@ export function CartSheet() {
                             <ShoppingCart className="w-16 h-16 opacity-20" />
                             <p>Your cart is empty</p>
                             <Button variant="outline" onClick={() => setIsCartOpen(false)}>
-                                Browse Courses
+                                Browse Year
                             </Button>
                         </div>
                     ) : (
@@ -107,9 +108,9 @@ export function CartSheet() {
                                         </div>
                                         <div className="flex items-center justify-between mt-2">
                                             <div className="flex flex-col">
-                                                <span className="font-bold text-slate-900">£{Number(item.price).toFixed(2)}</span>
+                                                <span className="font-bold text-slate-900">£{Number(item.price || 0).toFixed(2)}</span>
                                                 {item.registrationFee ? (
-                                                    <span className="text-[10px] text-slate-400">+ £{Number(item.registrationFee).toFixed(2)} Reg. Fee</span>
+                                                    <span className="text-[10px] text-slate-400">+ £{Number(item.registrationFee || 0).toFixed(2)} Reg. Fee</span>
                                                 ) : null}
                                             </div>
                                             <button

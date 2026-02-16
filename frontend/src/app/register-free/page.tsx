@@ -256,7 +256,7 @@ export default function RegisterFreePage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="requestedYear" className="text-xs font-bold text-slate-700">Preferred Year Group *</Label>
+                                    <Label htmlFor="requestedYear" className="text-xs font-bold text-slate-700">Preferred Course *</Label>
                                     <select
                                         id="requestedYear"
                                         className="w-full h-10 rounded-md border border-slate-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-3 text-sm bg-white"
@@ -264,7 +264,7 @@ export default function RegisterFreePage() {
                                         value={formData.requestedYear}
                                         onChange={(e) => setFormData({ ...formData, requestedYear: e.target.value })}
                                     >
-                                        <option value="">Select a year group</option>
+                                        <option value="">Select a course</option>
                                         <option value="YEAR 8">Year 8</option>
                                         <option value="YEAR 9">Year 9</option>
                                         <option value="YEAR 10">Year 10</option>

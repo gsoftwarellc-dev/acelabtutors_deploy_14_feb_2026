@@ -69,7 +69,7 @@ export default function UserPerformancePage() {
     const fetchPerformance = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(
                 `${apiUrl}/api/admin/users/${userId}/performance`,
                 {
@@ -181,11 +181,11 @@ export default function UserPerformancePage() {
                 </CardContent>
             </Card>
 
-            {/* Enrolled Courses & Attendance */}
+            {/* Enrolled Year & Attendance */}
             <div>
                 <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
                     <BookOpen className="w-5 h-5" />
-                    Enrolled Courses ({data.enrollments.length})
+                    Enrolled Year ({data.enrollments.length})
                 </h3>
 
                 {data.enrollments.length === 0 ? (

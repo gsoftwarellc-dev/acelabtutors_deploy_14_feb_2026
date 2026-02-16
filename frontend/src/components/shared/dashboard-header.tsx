@@ -36,7 +36,7 @@ export function DashboardHeader({ role }: DashboardHeaderProps) {
                         {user?.avatar ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
-                                src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${user.avatar}`}
+                                src={`${process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'}${user.avatar}`}
                                 alt={user.name}
                                 className="h-full w-full object-cover"
                             />

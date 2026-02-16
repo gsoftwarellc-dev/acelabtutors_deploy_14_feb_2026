@@ -20,7 +20,7 @@ export default function RegisterPage() {
         { id: 'student', label: 'Student', icon: GraduationCap },
         { id: 'tutor', label: 'Tutor', icon: BookOpen },
         { id: 'parent', label: 'Parent', icon: Users },
-        { id: 'admin', label: 'Admin', icon: Shield },
+
     ]
 
 
@@ -30,7 +30,7 @@ export default function RegisterPage() {
         setLoading(true)
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
             const res = await fetch(`${apiUrl}/api/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

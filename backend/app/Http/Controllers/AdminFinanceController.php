@@ -319,7 +319,7 @@ class AdminFinanceController extends Controller
         }
 
         // Redirect to frontend page
-        $redirectUri = config('app.url', 'http://localhost:3000') . '/admin/finance';
+        $redirectUri = config('app.url', 'https://acelabtutors.co.uk') . '/admin/finance';
         
         $url = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id={$clientId}&scope=read_write&redirect_uri={$redirectUri}";
 

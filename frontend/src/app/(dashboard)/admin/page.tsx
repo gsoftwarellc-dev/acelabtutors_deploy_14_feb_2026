@@ -22,7 +22,7 @@ export default function AdminDashboard() {
         const fetchDashboardData = async () => {
             try {
                 const token = localStorage.getItem('token')
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
                 // Fetch Users
                 const usersResponse = await fetch(`${apiUrl}/api/admin/users`, {

@@ -1,5 +1,5 @@
 const getBaseUrl = () => {
-    const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const url = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
     return url.endsWith('/api') ? url : `${url}/api`;
 };
 

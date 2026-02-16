@@ -1,0 +1,13 @@
+set timeout 120
+spawn ssh -p 65002 u977979652@45.93.101.65
+expect "password:"
+send "Acelab#123\r"
+expect "$ "
+send "grep -r \"localhost:8000\" domains/acelabtutors.co.uk/public_html | head -n 5\r"
+expect "$ "
+send "grep -c \"Year\" domains/acelabtutors.co.uk/public_html/.next/server/app/layout.js || echo \"No Year found\"\r"
+expect "$ "
+send "cat domains/acelabtutors.co.uk/public_html/.next/BUILD_ID\r"
+expect "$ "
+send "exit\r"
+expect eof

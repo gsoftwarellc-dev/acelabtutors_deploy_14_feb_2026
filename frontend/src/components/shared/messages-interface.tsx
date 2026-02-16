@@ -58,7 +58,7 @@ export default function MessagesInterface({ contacts }: MessagesProps) {
             const token = localStorage.getItem('token')
             const currentUserId = parseInt(localStorage.getItem('userId') || '0')
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/messages/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -139,7 +139,7 @@ export default function MessagesInterface({ contacts }: MessagesProps) {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/messages`, {
                 method: 'POST',
                 headers: {

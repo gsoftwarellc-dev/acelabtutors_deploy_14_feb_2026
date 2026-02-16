@@ -33,7 +33,7 @@ export default function GoogleConnectButton({ onConnectionChange }: GoogleConnec
     const checkGoogleStatus = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
             const res = await fetch(`${apiUrl}/api/google/status`, {
                 headers: {
@@ -58,7 +58,7 @@ export default function GoogleConnectButton({ onConnectionChange }: GoogleConnec
         try {
             setIsConnecting(true)
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
             const res = await fetch(`${apiUrl}/api/google/connect`, {
                 headers: {
@@ -81,7 +81,7 @@ export default function GoogleConnectButton({ onConnectionChange }: GoogleConnec
         try {
             setIsLoading(true)
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/google/disconnect`, {
                 method: 'POST',
                 headers: {

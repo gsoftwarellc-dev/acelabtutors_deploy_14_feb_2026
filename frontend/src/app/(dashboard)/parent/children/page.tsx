@@ -42,7 +42,7 @@ export default function ChildrenPage() {
                                 <div>
                                     <div className="flex items-center justify-center text-slate-400 mb-1">
                                         <BookOpen size={16} className="mr-1" />
-                                        <span className="text-xs uppercase font-medium">Courses</span>
+                                        <span className="text-xs uppercase font-medium">Year</span>
                                     </div>
                                     <span className="font-bold text-slate-900">3</span>
                                 </div>

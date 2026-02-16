@@ -1,0 +1,33 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "cd domains/acelabtutors.co.uk/public_html/.next/server/app\r"
+
+expect "$ "
+send "ls -la\r"
+
+expect "$ "
+send "echo '-- index.html check --'\r"
+expect "$ "
+send "grep \"dcb33f1eaf4e6ec3\" index.html 2>/dev/null || echo 'Not in index.html'\r"
+
+expect "$ "
+send "echo '-- page.html check --'\r"
+expect "$ "
+send "grep \"dcb33f1eaf4e6ec3\" page.html 2>/dev/null || echo 'Not in page.html'\r"
+
+expect "$ "
+send "exit\r"
+expect eof

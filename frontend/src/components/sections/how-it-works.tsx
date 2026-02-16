@@ -7,7 +7,7 @@ export function HowItWorks() {
     const steps = [
         {
             number: "01",
-            title: "Browse Courses",
+            title: "Browse Year",
             description: "Explore our wide range of courses, filter by subject and level, to find the perfect match for your academic needs.",
             color: "from-blue-500 to-cyan-500"
         },

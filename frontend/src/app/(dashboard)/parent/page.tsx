@@ -80,11 +80,11 @@ export default function ParentDashboard() {
                         </div>
                     </div>
 
-                    {/* Courses Grid */}
+                    {/* Year Grid */}
                     <div>
                         <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center">
                             <BookOpen className="mr-2 text-primary" size={24} />
-                            Enrolled Courses
+                            Enrolled Year
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {childData.enrollments.map((enrollment: any) => (

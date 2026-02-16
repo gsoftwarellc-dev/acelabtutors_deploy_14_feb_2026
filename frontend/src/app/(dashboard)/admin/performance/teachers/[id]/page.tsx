@@ -53,16 +53,16 @@ export default function TeacherDetailPage({ params }: { params: { id: string } }
                 </div>
                 <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
                     <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Courses</h3>
+                        <h3 className="text-sm font-semibold opacity-90">Year</h3>
                         <BookOpen size={20} />
                     </div>
                     <p className="text-3xl font-bold">{teacher.courses.length}</p>
                 </div>
             </div>
 
-            {/* Courses Teaching */}
+            {/* Year Teaching */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
-                <h2 className="text-xl font-bold text-slate-900 mb-4">Courses Teaching</h2>
+                <h2 className="text-xl font-bold text-slate-900 mb-4">Year Teaching</h2>
                 <div className="space-y-4">
                     {teacher.courses.map((course, idx) => (
                         <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">

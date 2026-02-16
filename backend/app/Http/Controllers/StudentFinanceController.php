@@ -66,7 +66,7 @@ class StudentFinanceController extends Controller
         }
 
         try {
-            $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+            $frontendUrl = config('app.frontend_url', 'https://acelabtutors.co.uk');
             
             $metadataPayload = [
                 'course_ids' => json_encode($courseIds),

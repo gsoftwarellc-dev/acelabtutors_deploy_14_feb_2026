@@ -121,7 +121,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
     const fetchCurriculum = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/courses/${courseId}/curriculum`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -144,7 +144,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
         if (!chapterTitle) return
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/courses/${courseId}/chapters`, {
                 method: 'POST',
                 headers: {
@@ -172,7 +172,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
         if (!editTitle.trim()) return
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/chapters/${chapterId}`, {
                 method: 'PUT',
                 headers: {
@@ -207,7 +207,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
         if (!editingLesson || !editLessonData.title.trim()) return
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
             const formData = new FormData()
             formData.append('title', editLessonData.title)
@@ -303,7 +303,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/chapters/${activeChapterId}/lessons`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
@@ -345,7 +345,7 @@ export default function CurriculumManager({ courseId }: { courseId: string }) {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
             let endpoint = ''
             if (itemToDelete.type === 'lesson') {

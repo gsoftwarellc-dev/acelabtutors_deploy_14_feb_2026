@@ -30,7 +30,7 @@ export default function LiveClassManager({ courseId }: { courseId: string }) {
     const fetchClasses = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/courses/${courseId}/live-classes`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -54,7 +54,7 @@ export default function LiveClassManager({ courseId }: { courseId: string }) {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const startDateTime = `${scheduleData.date}T${scheduleData.time}:00`
 
             const res = await fetch(`${apiUrl}/api/courses/${courseId}/live-classes`, {
@@ -89,7 +89,7 @@ export default function LiveClassManager({ courseId }: { courseId: string }) {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
             const res = await fetch(`${apiUrl}/api/live-classes/${showManageModal.id}`, {
                 method: 'POST',

@@ -50,7 +50,7 @@ export default function StudentDashboard() {
     const fetchDashboardData = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/student/dashboard`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -83,7 +83,7 @@ export default function StudentDashboard() {
     }
 
     const statsDisplay = [
-        { label: "Enrolled Courses", value: stats.enrolled_courses.toString(), trend: "neutral" as const },
+        { label: "Enrolled Year", value: stats.enrolled_courses.toString(), trend: "neutral" as const },
         { label: "Attendance", value: `${stats.attendance}%`, trend: "neutral" as const },
         { label: "Upcoming Classes", value: stats.upcoming_classes.toString(), trend: "neutral" as const },
     ]

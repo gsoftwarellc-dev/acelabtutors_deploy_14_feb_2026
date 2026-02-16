@@ -9,7 +9,7 @@ export default function StudentDetailPage({ params }: { params: { id: string } }
         name: "Alex Johnson",
         email: "alex@example.com",
         phone: "+1 (555) 123-4567",
-        enrolledCourses: [
+        enrolledYear: [
             { name: "Mathematics - Calculus", tutor: "Dr. Emily Chen", hours: 28 },
             { name: "Physics - Quantum Mechanics", tutor: "James Wilson", hours: 20 }
         ],
@@ -50,18 +50,18 @@ export default function StudentDetailPage({ params }: { params: { id: string } }
 
                 <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-6 text-white">
                     <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold opacity-90">Courses</h3>
+                        <h3 className="text-sm font-semibold opacity-90">Year</h3>
                         <BookOpen size={20} />
                     </div>
-                    <p className="text-3xl font-bold">{student.enrolledCourses.length}</p>
+                    <p className="text-3xl font-bold">{student.enrolledYear.length}</p>
                 </div>
             </div>
 
-            {/* Enrolled Courses */}
+            {/* Enrolled Year */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
-                <h2 className="text-xl font-bold text-slate-900 mb-4">Enrolled Courses</h2>
+                <h2 className="text-xl font-bold text-slate-900 mb-4">Enrolled Year</h2>
                 <div className="space-y-4">
-                    {student.enrolledCourses.map((course, idx) => (
+                    {student.enrolledYear.map((course, idx) => (
                         <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                             <div>
                                 <h4 className="font-semibold text-slate-900">{course.name}</h4>

@@ -52,7 +52,7 @@ export default function StudentCourseDetailPage() {
         const fetchData = async () => {
             setLoading(true)
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const token = localStorage.getItem('token')
                 const headers: HeadersInit = {}
                 if (token) {
@@ -112,7 +112,7 @@ export default function StudentCourseDetailPage() {
             <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4 text-center">
                 <h1 className="text-2xl font-bold text-slate-800 mb-2">Course Not Found</h1>
                 <Link href="/student/courses">
-                    <Button>Back to My Courses</Button>
+                    <Button>Back to My Year</Button>
                 </Link>
             </div>
         )
@@ -226,7 +226,7 @@ export default function StudentCourseDetailPage() {
         // Needs `php artisan storage:link` to be accessible at /storage.
         // So URL should be API_URL + '/storage/' + activeLesson.file_path
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
         // Note: In typical Laravel setup, it's /storage, but let's check if file_path already has /storage?
         // Lesson controller stores as 'course_materials/...'
         const fileUrl = (activeLesson as any).file_path

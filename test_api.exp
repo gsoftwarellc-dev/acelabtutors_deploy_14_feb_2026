@@ -1,0 +1,27 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "echo '-- Testing /api/course-options --'\r"
+expect "$ "
+send "curl -s https://api.acelabtutors.co.uk/api/course-options | jq . || curl -s https://api.acelabtutors.co.uk/api/course-options\r"
+
+expect "$ "
+send "echo '\r-- Testing /api/public/courses --'\r"
+expect "$ "
+send "curl -s https://api.acelabtutors.co.uk/api/public/courses | jq . || curl -s https://api.acelabtutors.co.uk/api/public/courses\r"
+
+expect "$ "
+send "exit\r"
+expect eof

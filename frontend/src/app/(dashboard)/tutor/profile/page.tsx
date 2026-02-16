@@ -7,7 +7,7 @@ import GoogleConnectButton from "@/components/GoogleConnectButton"
 
 export default function TutorProfile() {
     const { user, updateUser } = useAuth()
-    const [profileImage, setProfileImage] = useState(user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${user.avatar}`) : "/default-avatar.png")
+    const [profileImage, setProfileImage] = useState(user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'}${user.avatar}`) : "/default-avatar.png")
     const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
@@ -43,7 +43,7 @@ export default function TutorProfile() {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/user/password`, {
                 method: 'POST',
                 headers: {
@@ -84,7 +84,7 @@ export default function TutorProfile() {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
             const res = await fetch(`${apiUrl}/api/user/avatar`, {
                 method: 'POST',

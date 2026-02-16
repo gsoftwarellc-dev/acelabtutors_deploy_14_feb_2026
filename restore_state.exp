@@ -1,0 +1,64 @@
+#!/usr/bin/expect -f
+
+set timeout 120
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "cd domains/acelabtutors.co.uk\r"
+
+expect "$ "
+send "ls -F\r"
+
+# Check if public_html_zombie exists
+expect "$ "
+send "if \[ -d public_html_zombie \]; then
+    echo 'ZOMBIE_FOUND'
+    cp -rp public_html_zombie/.env public_html/.env
+    cp -rp public_html_zombie/backend public_html/
+    cp -rp public_html_zombie/*.exp public_html/
+    cp -rp public_html_zombie/*.sh public_html/
+    cp -rp public_html_zombie/deploy.tar.gz public_html/
+    cp -rp public_html_zombie/db_* public_html/
+    cp -rp public_html_zombie/data_dump.sql public_html/
+    cp -rp public_html_zombie/composer.json public_html/
+fi\r"
+
+expect "$ "
+send "cd public_html\r"
+
+expect "$ "
+send "tar -xzf deploy.tar.gz\r"
+
+expect "$ "
+send "echo '<IfModule LiteSpeed>
+  CacheDisable public /
+  CacheDisable private /
+</IfModule>
+PassengerAppRoot /home/u977979652/domains/acelabtutors.co.uk/public_html
+PassengerAppType node
+PassengerNodejs /opt/alt/alt-nodejs20/root/bin/node
+PassengerStartupFile server.js
+PassengerBaseURI /' > .htaccess\r"
+
+expect "$ "
+send "mkdir -p tmp\r"
+expect "$ "
+send "touch tmp/restart.txt\r"
+
+expect "$ "
+send "pkill -u u977979652 lsnode.js\r"
+expect "$ "
+send "pkill -u u977979652 node\r"
+
+expect "$ "
+send "exit\r"
+expect eof

@@ -69,7 +69,7 @@ export function Hero() {
                                 className="group relative w-full text-lg px-8 py-6 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 shadow-lg hover:shadow-xl hover:shadow-primary/50 transition-all duration-300 hover:scale-105"
                             >
                                 <span className="relative z-10 flex items-center gap-2">
-                                    Browse Courses
+                                    Browse Year
                                     <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
                                 </span>
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-md"></div>

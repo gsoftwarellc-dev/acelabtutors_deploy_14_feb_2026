@@ -22,22 +22,22 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-export default function TutorCoursesPage() {
-    const [courses, setCourses] = useState<any[]>([])
+export default function TutorYearPage() {
+    const [courses, setYear] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [currentFilter, setCurrentFilter] = useState("active")
     const [courseToDelete, setCourseToDelete] = useState<number | null>(null)
 
     useEffect(() => {
-        fetchCourses()
+        fetchYear()
     }, [currentFilter])
 
-    const fetchCourses = async () => {
+    const fetchYear = async () => {
         setIsLoading(true)
         try {
             const token = localStorage.getItem('token')
             const query = currentFilter === 'trash' ? '?filter=trash' : ''
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(`${apiUrl}/api/courses${query}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -46,7 +46,7 @@ export default function TutorCoursesPage() {
             })
             if (response.ok) {
                 const data = await response.json()
-                setCourses(data)
+                setYear(data)
             }
         } catch (error) {
             console.error("Failed to fetch courses", error)
@@ -60,7 +60,7 @@ export default function TutorCoursesPage() {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const isTrash = currentFilter === 'trash'
             const url = isTrash
                 ? `${apiUrl}/api/courses/${courseToDelete}/force`
@@ -74,7 +74,7 @@ export default function TutorCoursesPage() {
                 }
             })
             // Refresh list by removing the deleted course locally
-            setCourses(courses.filter(c => c.id !== courseToDelete))
+            setYear(courses.filter(c => c.id !== courseToDelete))
             setCourseToDelete(null)
         } catch (error) {
             console.error("Failed to delete course", error)
@@ -84,7 +84,7 @@ export default function TutorCoursesPage() {
     const handleRestoreCourse = async (courseId: number) => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             await fetch(`${apiUrl}/api/courses/${courseId}/restore`, {
                 method: 'POST',
                 headers: {
@@ -93,7 +93,7 @@ export default function TutorCoursesPage() {
                 }
             })
             // Refresh list by removing the restored course from trash view
-            setCourses(courses.filter(c => c.id !== courseId))
+            setYear(courses.filter(c => c.id !== courseId))
         } catch (error) {
             console.error("Failed to restore course", error)
         }
@@ -103,7 +103,7 @@ export default function TutorCoursesPage() {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 mb-2">My Courses</h1>
+                    <h1 className="text-3xl font-bold text-slate-900 mb-2">My Year</h1>
                     <p className="text-slate-600">Manage your courses and view student enrollments</p>
                 </div>
                 {/* Only show Create button in Active view */}
@@ -118,7 +118,7 @@ export default function TutorCoursesPage() {
 
             <Tabs defaultValue="active" value={currentFilter} onValueChange={setCurrentFilter} className="w-full">
                 <TabsList className="mb-6">
-                    <TabsTrigger value="active">Active Courses</TabsTrigger>
+                    <TabsTrigger value="active">Active Year</TabsTrigger>
                     <TabsTrigger value="trash">Trash</TabsTrigger>
                 </TabsList>
 

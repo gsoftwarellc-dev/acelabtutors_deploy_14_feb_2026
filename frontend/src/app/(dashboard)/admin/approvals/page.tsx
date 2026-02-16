@@ -21,18 +21,18 @@ interface Course {
 
 export default function CourseApprovalsPage() {
     const router = useRouter()
-    const [courses, setCourses] = useState<Course[]>([])
+    const [courses, setYear] = useState<Course[]>([])
     const [loading, setLoading] = useState(true)
     const [actionLoading, setActionLoading] = useState<number | null>(null)
 
-    const fetchCourses = async () => {
+    const fetchYear = async () => {
         setLoading(true)
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/admin/courses/submitted`)
             if (res.ok) {
                 const data = await res.json()
-                setCourses(data)
+                setYear(data)
             }
         } catch (error) {
             console.error("Failed to fetch courses", error)
@@ -42,18 +42,18 @@ export default function CourseApprovalsPage() {
     }
 
     useEffect(() => {
-        fetchCourses()
+        fetchYear()
     }, [])
 
     const handleApprove = async (id: number) => {
         setActionLoading(id)
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/admin/courses/${id}/approve`, {
                 method: 'POST'
             })
             if (res.ok) {
-                setCourses(courses.filter(c => c.id !== id))
+                setYear(courses.filter(c => c.id !== id))
             }
         } catch (error) {
             console.error("Failed to approve", error)
@@ -67,12 +67,12 @@ export default function CourseApprovalsPage() {
 
         setActionLoading(id)
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/admin/courses/${id}/reject`, {
                 method: 'POST'
             })
             if (res.ok) {
-                setCourses(courses.filter(c => c.id !== id))
+                setYear(courses.filter(c => c.id !== id))
             }
         } catch (error) {
             console.error("Failed to reject", error)

@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+set timeout 30
+set password {4@iVyH5R$XXiv@8}
+spawn ssh -p 65002 u977979652@45.93.101.65
+expect "password:"
+send "$password\r"
+expect "$ "
+send "cat domains/acelabtutors.co.uk/public_html/.htaccess\r"
+expect "$ "
+send "ls -la /home/u977979652/domains/acelabtutors.co.uk\r"
+expect "$ "
+send "ls -la /home/u977979652\r"
+expect "$ "
+send "find /home/u977979652 -name \".next\" -type d 2>/dev/null\r"
+expect "$ "
+send "ps aux | grep node\r"
+expect "$ "
+send "exit\r"
+expect eof

@@ -52,7 +52,7 @@ export default function PublicCourseDetailPage() {
         const fetchData = async () => {
             setLoading(true)
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
                 // Fetch Course Details
                 const courseRes = await fetch(`${apiUrl}/api/courses/${id}`)
@@ -114,7 +114,7 @@ export default function PublicCourseDetailPage() {
         }
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/courses/${course?.id}/enroll`, {
                 method: 'POST',
                 headers: {
@@ -159,7 +159,7 @@ export default function PublicCourseDetailPage() {
             <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4 text-center">
                 <h1 className="text-2xl font-bold text-slate-800 mb-2">Course Not Found</h1>
                 <Link href="/courses">
-                    <Button>Browse All Courses</Button>
+                    <Button>Browse All Year</Button>
                 </Link>
             </div>
         )
@@ -175,7 +175,7 @@ export default function PublicCourseDetailPage() {
                 <Link href="/courses">
                     <Button className="mb-6 gap-2 bg-black text-white hover:bg-slate-800 hover:text-white transition-all shadow-md">
                         <ArrowLeft size={16} />
-                        Back to Courses
+                        Back to Year
                     </Button>
                 </Link>
 

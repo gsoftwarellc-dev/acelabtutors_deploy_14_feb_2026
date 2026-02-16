@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             const token = localStorage.getItem('token')
             if (token) {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
                 await fetch(`${apiUrl}/api/logout`, {
                     method: 'POST',
                     headers: {

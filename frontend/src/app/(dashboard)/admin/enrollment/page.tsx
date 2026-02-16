@@ -40,18 +40,18 @@ export default function CourseEnrollmentPage() {
     const [error, setError] = useState<string | null>(null)
 
     // Form State
-    const [courses, setCourses] = useState<Course[]>([])
+    const [courses, setYear] = useState<Course[]>([])
     const [selectedCourseId, setSelectedCourseId] = useState("")
     const [enrolling, setEnrolling] = useState(false)
 
     useEffect(() => {
-        fetchCourses()
+        fetchYear()
     }, [])
 
-    const fetchCourses = async () => {
+    const fetchYear = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(`${apiUrl}/api/admin/courses`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -59,7 +59,7 @@ export default function CourseEnrollmentPage() {
             })
             if (response.ok) {
                 const data = await response.json()
-                setCourses(data)
+                setYear(data)
             }
         } catch (error) {
             console.error("Failed to fetch courses", error)
@@ -77,7 +77,7 @@ export default function CourseEnrollmentPage() {
         try {
             const token = localStorage.getItem('token')
             // Fetch user detail using existing endpoint
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(`${apiUrl}/api/admin/users/${searchId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -107,7 +107,7 @@ export default function CourseEnrollmentPage() {
         setEnrolling(true)
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(`${apiUrl}/api/admin/users/${student.id}/enroll`, {
                 method: 'POST',
                 headers: {
@@ -122,7 +122,7 @@ export default function CourseEnrollmentPage() {
             if (response.ok) {
                 alert("Student successfully enrolled!")
                 // Refresh student data to show new enrollment
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const refreshRes = await fetch(`${apiUrl}/api/admin/users/${student.id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
@@ -153,7 +153,7 @@ export default function CourseEnrollmentPage() {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(`${apiUrl}/api/admin/users/${student.id}/courses/${courseId}`, {
                 method: 'DELETE',
                 headers: {
@@ -163,7 +163,7 @@ export default function CourseEnrollmentPage() {
 
             if (response.ok) {
                 // Refresh student data
-                const refreshApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const refreshApiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const refreshRes = await fetch(`${refreshApiUrl}/api/admin/users/${student.id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })

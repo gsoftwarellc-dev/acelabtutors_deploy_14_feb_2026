@@ -45,7 +45,7 @@ export function Sidebar({ role }: SidebarProps) {
             const token = localStorage.getItem('token')
             if (!token) return
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/messages/unread-count`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -64,7 +64,7 @@ export function Sidebar({ role }: SidebarProps) {
     const links = {
         student: [
             { href: "/student", label: "Dashboard", icon: LayoutDashboard },
-            { href: "/student/courses", label: "My Courses", icon: BookOpen },
+            { href: "/student/courses", label: "My Year", icon: BookOpen },
             { href: "/student/exams", label: "Exams & Result", icon: FileText },
             { href: "/student/messages", label: "Messages", icon: MessageSquare },
             { href: "/student/profile", label: "Profile", icon: User },
@@ -76,7 +76,7 @@ export function Sidebar({ role }: SidebarProps) {
         ],
         tutor: [
             { href: "/tutor", label: "Dashboard", icon: LayoutDashboard },
-            { href: "/tutor/courses", label: "Courses", icon: BookOpen },
+            { href: "/tutor/courses", label: "Year", icon: BookOpen },
             { href: "/tutor/attendance-history", label: "Attendance History", icon: History },
             { href: "/tutor/messages", label: "Messages", icon: MessageSquare },
             { href: "/tutor/earnings", label: "Earnings", icon: CreditCard },
@@ -88,7 +88,7 @@ export function Sidebar({ role }: SidebarProps) {
             { href: "/admin/messages", label: "Messages", icon: MessageSquare },
             { href: "/admin/contacts", label: "Contacts", icon: Contact },
             { href: "/admin/finance", label: "Finance", icon: CreditCard },
-            { href: "/admin/courses/control", label: "Control Courses", icon: SlidersHorizontal },
+            { href: "/admin/courses/control", label: "Control Year", icon: SlidersHorizontal },
             { href: "/admin/registrations", label: "Registrations", icon: History },
             { href: "/admin/enrollment", label: "Course Enrollment", icon: BookCopy },
             { href: "/admin/filters", label: "Manage Filters", icon: Filter },

@@ -46,7 +46,7 @@ function OrderConfirmationContent() {
 
         const fetchOrder = async () => {
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const res = await fetch(`${apiUrl}/api/student/order-details?session_id=${sessionId}`)
 
                 if (!res.ok) {

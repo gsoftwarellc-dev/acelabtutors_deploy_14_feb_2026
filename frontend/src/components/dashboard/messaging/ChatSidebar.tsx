@@ -34,7 +34,7 @@ export default function ChatSidebar({ onSelectContact, selectedContactId }: Chat
     const fetchContacts = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/messages/contacts`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })

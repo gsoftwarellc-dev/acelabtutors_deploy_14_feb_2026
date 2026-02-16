@@ -1,0 +1,30 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "ls -la domains/api.acelabtutors.co.uk/public_html/\r"
+
+expect "$ "
+send "echo '-- Backend .env check --'\r"
+expect "$ "
+send "cat domains/api.acelabtutors.co.uk/public_html/.env\r"
+
+expect "$ "
+send "echo '-- Backend logs check --'\r"
+expect "$ "
+send "tail -n 20 domains/api.acelabtutors.co.uk/public_html/storage/logs/laravel.log 2>/dev/null || echo 'No laravel logs found'\r"
+
+expect "$ "
+send "exit\r"
+expect eof

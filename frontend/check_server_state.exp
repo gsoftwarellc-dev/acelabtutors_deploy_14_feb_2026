@@ -1,0 +1,12 @@
+set timeout 60
+spawn ssh -p 65002 u977979652@45.93.101.65
+expect "password:"
+send "Acelab#123\r"
+expect "$ "
+send "grep -r \"Year\" domains/acelabtutors.co.uk/public_html/src/components/layout/navbar.tsx || echo \"Navbar NOT updated on server\"\r"
+expect "$ "
+send "grep -C 2 \"localhost:8000\" domains/acelabtutors.co.uk/public_html/.next/standalone/server.js || echo \"No localhost in server.js\"\r"
+expect "$ "
+send "ls -la domains/acelabtutors.co.uk/public_html/server.js\r"
+expect "$ "
+send "exit\r"

@@ -29,7 +29,7 @@ export default function PerformancePage() {
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(`${apiUrl}/api/admin/users`, {
                 headers: {
                     'Authorization': `Bearer ${token}`

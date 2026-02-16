@@ -1,0 +1,23 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+set host "45.93.101.65"
+set port "65002"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+
+spawn ssh -p $port $user@$host
+expect {
+    "Are you sure" { send "yes\r"; exp_continue }
+    "password:" { send "$password\r" }
+}
+
+expect "$ "
+send "find /home/u977979652 -name \".lscache\" -type d\r"
+
+expect "$ "
+send "find /home/u977979652 -name \"cache\" -type d | grep acelabtutors\r"
+
+expect "$ "
+send "exit\r"
+expect eof

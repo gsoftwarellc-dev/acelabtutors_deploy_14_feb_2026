@@ -87,7 +87,7 @@ export default function TutorStudentDetailPage() {
                             <p className="text-slate-500 mb-2">Student ID: #{student.id}</p>
                             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
                                 <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium border border-blue-100">
-                                    {student.enrollments.length} Active Courses
+                                    {student.enrollments.length} Active Year
                                 </span>
                                 <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-100">
                                     Active since {student.joinDate}
@@ -135,9 +135,9 @@ export default function TutorStudentDetailPage() {
                 </div>
             </div>
 
-            {/* Courses & Performance */}
+            {/* Year & Performance */}
             <div className="space-y-6">
-                <h3 className="text-xl font-bold text-slate-900">Enrolled Courses & Performance</h3>
+                <h3 className="text-xl font-bold text-slate-900">Enrolled Year & Performance</h3>
                 <div className="grid grid-cols-1 gap-6">
                     {student.enrollments.map((course) => (
                         <div key={course.id} className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">

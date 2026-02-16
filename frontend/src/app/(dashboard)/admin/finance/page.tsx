@@ -84,7 +84,7 @@ function AdminFinanceContent() {
         setIsConnecting(true)
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
             const response = await fetch(`${apiUrl}/api/admin/finance/connect/callback`, {
                 method: 'POST',
@@ -120,7 +120,7 @@ function AdminFinanceContent() {
         setIsSavingConfig(true)
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
             const response = await fetch(`${apiUrl}/api/admin/finance/connect/config`, {
                 method: 'POST',
@@ -168,7 +168,7 @@ function AdminFinanceContent() {
         setCreatedLink("")
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
             const response = await fetch(`${apiUrl}/api/admin/finance/payment-link`, {
                 method: 'POST',
@@ -214,7 +214,7 @@ function AdminFinanceContent() {
         setIsLoadingStats(true)
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
             // Fetch Stats
             const statsRes = await fetch(`${apiUrl}/api/admin/finance/stats`, {
@@ -254,7 +254,7 @@ function AdminFinanceContent() {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
             const response = await fetch(`${apiUrl}/api/admin/finance/connect/url`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -283,7 +283,7 @@ function AdminFinanceContent() {
     const fetchTutors = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
             const response = await fetch(`${apiUrl}/api/admin/finance/tutors`, { // We haven't added this route yet? Wait, let's check AdminFinanceController
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -305,7 +305,7 @@ function AdminFinanceContent() {
         setIsProcessingPayout(true)
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
             const response = await fetch(`${apiUrl}/api/admin/finance/payout`, { // Need to add this route too
                 method: 'POST',

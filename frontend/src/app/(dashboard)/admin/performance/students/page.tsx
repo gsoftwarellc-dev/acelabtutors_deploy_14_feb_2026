@@ -41,7 +41,7 @@ export default function StudentPerformancePage() {
                             <tr>
                                 <th className="px-6 py-3 font-medium text-left">Student</th>
                                 <th className="px-6 py-3 font-medium text-left">Email</th>
-                                <th className="px-6 py-3 font-medium text-center">Courses</th>
+                                <th className="px-6 py-3 font-medium text-center">Year</th>
                                 <th className="px-6 py-3 font-medium text-center">Attendance</th>
                                 <th className="px-6 py-3 font-medium text-center">Action</th>
                             </tr>

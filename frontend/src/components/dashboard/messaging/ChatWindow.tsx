@@ -57,7 +57,7 @@ export default function ChatWindow({ contact }: ChatWindowProps) {
         // Quick fetch to get "me"
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/me`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -73,7 +73,7 @@ export default function ChatWindow({ contact }: ChatWindowProps) {
     const fetchMessages = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/messages/${contact.id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -105,7 +105,7 @@ export default function ChatWindow({ contact }: ChatWindowProps) {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
 
             const formData = new FormData()
             formData.append('receiver_id', contact.id.toString())

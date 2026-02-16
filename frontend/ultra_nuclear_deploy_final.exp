@@ -1,0 +1,29 @@
+set timeout 600
+set host "45.93.101.65"
+set user "u977979652"
+set password {4@iVyH5R$XXiv@8}
+set remote_root "domains/acelabtutors.co.uk"
+
+# 1. Upload
+spawn scp -P 65002 deploy.tar.gz $user@$host:$remote_root/deploy_new.tar.gz
+expect "password:"
+send "$password\r"
+expect eof
+
+# 2. Extract and Rotate
+spawn ssh -p 65002 $user@$host
+expect "password:"
+send "$password\r"
+expect "$ "
+send "cd $remote_root && mv public_html public_html_old_[clock seconds] && mkdir public_html && mv deploy_new.tar.gz public_html/deploy.tar.gz && cd public_html && tar -xzf deploy.tar.gz && rm deploy.tar.gz && exit\r"
+expect eof
+
+# 3. Finalization (.htaccess, restart)
+spawn ssh -p 65002 $user@$host
+expect "password:"
+send "$password\r"
+expect "$ "
+send "cd $remote_root/public_html && cat > .htaccess <<'HTACCESS'\n<IfModule LiteSpeed>\n  CacheDisable public /\n  CacheDisable private /\n  LitespeedPublicCache false\n</IfModule>\n<IfModule mod_headers.c>\n  Header set Cache-Control \"no-cache, no-store, must-revalidate\"\n  Header set Pragma \"no-cache\"\n  Header set Expires 0\n</IfModule>\n\nPassengerAppRoot /home/u977979652/domains/acelabtutors.co.uk/public_html\nPassengerAppType node\nPassengerNodejs /opt/alt/alt-nodejs20/root/bin/node\nPassengerStartupFile server.js\nPassengerBaseURI /\nHTACCESS\r"
+expect "$ "
+send "mkdir -p tmp && touch tmp/restart.txt && pkill -9 -u $user node && exit\r"
+expect eof

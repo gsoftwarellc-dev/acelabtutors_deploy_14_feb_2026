@@ -19,7 +19,7 @@ class TutorFinanceController extends Controller
             return response()->json(['error' => 'Stripe Client ID not configured.'], 500);
         }
 
-        $redirectUri = env('FRONTEND_URL', 'http://localhost:3000') . '/tutor/finance/callback';
+        $redirectUri = env('FRONTEND_URL', 'https://acelabtutors.co.uk') . '/tutor/finance/callback';
         
         // standard connect
         $url = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id={$clientId}&scope=read_write&redirect_uri={$redirectUri}";

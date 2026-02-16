@@ -36,7 +36,7 @@ export default function CreateCoursePage() {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const res = await fetch(`${apiUrl}/api/course-options`)
                 if (res.ok) {
                     const data = await res.json()
@@ -59,7 +59,7 @@ export default function CreateCoursePage() {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(`${apiUrl}/api/courses`, {
                 method: 'POST',
                 headers: {

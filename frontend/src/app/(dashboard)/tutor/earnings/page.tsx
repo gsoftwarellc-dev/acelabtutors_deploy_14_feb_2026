@@ -42,7 +42,7 @@ export default function TutorEarningsPage() {
     const fetchEarnings = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/tutor/earnings`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })

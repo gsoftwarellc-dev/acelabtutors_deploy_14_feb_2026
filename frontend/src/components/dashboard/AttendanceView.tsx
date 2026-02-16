@@ -49,7 +49,7 @@ export default function AttendanceView({ courseId }: AttendanceViewProps) {
             const token = localStorage.getItem('token')
             const dateStr = format(date, 'yyyy-MM-dd')
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/courses/${courseId}/attendance?date=${dateStr}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -89,7 +89,7 @@ export default function AttendanceView({ courseId }: AttendanceViewProps) {
 
             console.log("Saving attendance Payload:", { date: dateStr, attendance: attendanceData })
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/courses/${courseId}/attendance`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'}/api/courses/${courseId}/attendance`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

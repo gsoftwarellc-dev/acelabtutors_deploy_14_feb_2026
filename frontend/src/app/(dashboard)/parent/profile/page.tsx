@@ -14,7 +14,7 @@ export default function ParentProfilePage() {
         phone: user?.phone || "",
         joinDate: user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "",
         bio: user?.bio || "",
-        avatar: user?.avatar ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${user.avatar}` : "",
+        avatar: user?.avatar ? `${process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'}${user.avatar}` : "",
         currentPassword: "",
         newPassword: "",
         confirmPassword: ""
@@ -29,7 +29,7 @@ export default function ParentProfilePage() {
                 phone: user.phone || "",
                 joinDate: user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "",
                 bio: user.bio || "",
-                avatar: user.avatar ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${user.avatar}` : ""
+                avatar: user.avatar ? `${process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'}${user.avatar}` : ""
             }))
         }
     }, [user])
@@ -47,7 +47,7 @@ export default function ParentProfilePage() {
 
             try {
                 const token = localStorage.getItem('token')
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
                 const response = await fetch(`${apiUrl}/api/user/avatar`, {
                     method: 'POST',

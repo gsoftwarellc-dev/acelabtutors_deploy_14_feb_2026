@@ -53,7 +53,7 @@ interface Course {
 }
 
 export default function CourseControlPage() {
-    const [courses, setCourses] = useState<Course[]>([])
+    const [courses, setYear] = useState<Course[]>([])
     const [loading, setLoading] = useState(true)
     const [actionLoading, setActionLoading] = useState<number | null>(null)
     const [searchTerm, setSearchTerm] = useState("")
@@ -102,11 +102,11 @@ export default function CourseControlPage() {
         }
     }
 
-    const fetchApprovedCourses = async () => {
+    const fetchApprovedYear = async () => {
         setLoading(true)
         try {
             const { data } = await api.get('/admin/courses/approved')
-            setCourses(data)
+            setYear(data)
         } catch (error) {
             console.error("Failed to fetch courses", error)
         } finally {
@@ -115,7 +115,7 @@ export default function CourseControlPage() {
     }
 
     useEffect(() => {
-        fetchApprovedCourses()
+        fetchApprovedYear()
         fetchFilterOptions()
     }, [])
 
@@ -128,7 +128,7 @@ export default function CourseControlPage() {
                 subject: newCourse.subjects.join(', ')
             }
             await api.post('/admin/courses', payload)
-            await fetchApprovedCourses()
+            await fetchApprovedYear()
             setIsCreateDialogOpen(false)
             setNewCourse({
                 name: "",
@@ -154,7 +154,7 @@ export default function CourseControlPage() {
                 subject: editingCourse.subjects.join(', ')
             }
             await api.put(`/admin/courses/${editingCourse.id}`, payload)
-            await fetchApprovedCourses()
+            await fetchApprovedYear()
             setIsEditDialogOpen(false)
             setEditingCourse(null)
         } catch (error) {
@@ -169,7 +169,7 @@ export default function CourseControlPage() {
         setIsDeleting(true)
         try {
             await api.delete(`/admin/courses/${courseToDelete}`)
-            await fetchApprovedCourses()
+            await fetchApprovedYear()
             setIsDeleteDialogOpen(false)
             setCourseToDelete(null)
         } catch (error) {
@@ -183,7 +183,7 @@ export default function CourseControlPage() {
         setActionLoading(id)
         try {
             const { data } = await api.put(`/admin/courses/${id}/visibility`)
-            setCourses(courses.map(course =>
+            setYear(courses.map(course =>
                 course.id === id
                     ? { ...course, is_platform_visible: data.is_platform_visible }
                     : course
@@ -195,7 +195,7 @@ export default function CourseControlPage() {
         }
     }
 
-    const filteredCourses = courses.filter(course =>
+    const filteredYear = courses.filter(course =>
         course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         course.tutor.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -204,7 +204,7 @@ export default function CourseControlPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Control Courses</h1>
+                    <h1 className="text-2xl font-bold text-slate-900">Control Year</h1>
                     <p className="text-slate-500">Manage platform visibility, edit details, or delete courses</p>
                 </div>
                 <Button
@@ -229,7 +229,7 @@ export default function CourseControlPage() {
                         />
                     </div>
                     <div className="text-xs font-medium text-slate-500">
-                        {filteredCourses.length} Approved Courses
+                        {filteredYear.length} Approved Year
                     </div>
                 </div>
 
@@ -253,14 +253,14 @@ export default function CourseControlPage() {
                                         Loading courses...
                                     </td>
                                 </tr>
-                            ) : filteredCourses.length === 0 ? (
+                            ) : filteredYear.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
                                         No approved courses found.
                                     </td>
                                 </tr>
                             ) : (
-                                filteredCourses.map((course) => (
+                                filteredYear.map((course) => (
                                     <tr key={course.id} className="hover:bg-slate-50/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <Link href={`/tutor/courses/${course.id}`} target="_blank" className="group">
@@ -296,7 +296,7 @@ export default function CourseControlPage() {
                                                 initialPrice={course.price}
                                                 initialRegistrationFee={course.registration_fee}
                                                 onUpdate={(newPrice, newRegFee) => {
-                                                    setCourses(courses.map(c => c.id === course.id ? { ...c, price: newPrice, registration_fee: newRegFee } : c))
+                                                    setYear(courses.map(c => c.id === course.id ? { ...c, price: newPrice, registration_fee: newRegFee } : c))
                                                 }}
                                             />
                                         </td>

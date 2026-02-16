@@ -15,7 +15,7 @@ const SCHOOL_TYPES = ["Primary", "Secondary", "College", "University"]
 const YEARS = ["Year 7", "Year 8", "Year 9", "Year 10", "Year 11", "Year 12", "Year 13"]
 const SUBJECTS = ["Mathematics", "English", "Science", "Physics", "Chemistry", "Biology", "History", "Geography", "Computer Science"]
 
-function CoursesContent() {
+function YearContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const { addItem, isInCart, setIsCartOpen } = useCart()
@@ -24,7 +24,7 @@ function CoursesContent() {
     const [selectedSchools, setSelectedSchools] = useState<string[]>([])
     const [selectedYears, setSelectedYears] = useState<string[]>([])
     const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
-    const [courses, setCourses] = useState<any[]>([])
+    const [courses, setYear] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
     // Filter Options State
@@ -53,7 +53,7 @@ function CoursesContent() {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const res = await fetch(`${apiUrl}/api/course-options`)
                 if (res.ok) {
                     const data = await res.json()
@@ -70,9 +70,9 @@ function CoursesContent() {
         fetchOptions()
     }, [])
 
-    // Fetch Courses
+    // Fetch Year
     useEffect(() => {
-        const fetchCourses = async () => {
+        const fetchYear = async () => {
             setLoading(true)
             try {
                 const params = new URLSearchParams()
@@ -80,11 +80,11 @@ function CoursesContent() {
                 if (selectedYears.length) params.append('year', selectedYears.join(','))
                 if (selectedSubjects.length) params.append('subject', selectedSubjects.join(','))
 
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const res = await fetch(`${apiUrl}/api/public/courses?${params.toString()}`)
                 if (res.ok) {
                     const data = await res.json()
-                    setCourses(data.data) // Assuming paginated response
+                    setYear(data.data) // Assuming paginated response
                 }
             } catch (error) {
                 console.error("Failed to fetch courses", error)
@@ -93,7 +93,7 @@ function CoursesContent() {
             }
         }
 
-        fetchCourses()
+        fetchYear()
     }, [selectedSchools, selectedYears, selectedSubjects])
 
     // Update URL when filters change
@@ -162,9 +162,9 @@ function CoursesContent() {
                                 </div>
                             </div>
 
-                            {/* Year */}
+                            {/* Course */}
                             <div className="mb-6">
-                                <h4 className="font-semibold text-sm text-slate-700 mb-3">Year Group</h4>
+                                <h4 className="font-semibold text-sm text-slate-700 mb-3">Course</h4>
                                 <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                     {filterOptions.years.map(year => (
                                         <div key={year} className="flex items-center space-x-2">
@@ -201,7 +201,7 @@ function CoursesContent() {
                     {/* Course Grid */}
                     <div className="flex-1">
                         <div className="mb-6">
-                            <h1 className="text-3xl font-bold text-slate-900">Explore Courses</h1>
+                            <h1 className="text-3xl font-bold text-slate-900">Explore Year</h1>
                             <p className="text-slate-500 mt-1">Found {courses.length} courses matching your criteria</p>
                         </div>
 
@@ -354,10 +354,10 @@ function CoursesContent() {
     )
 }
 
-export default function CoursesPage() {
+export default function YearPage() {
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <CoursesContent />
+            <YearContent />
         </Suspense>
     )
 }

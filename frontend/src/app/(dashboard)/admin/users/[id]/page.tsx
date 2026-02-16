@@ -51,7 +51,7 @@ export default function UserProfilePage() {
     const { id } = params
 
     const [user, setUser] = useState<User | null>(null)
-    const [courses, setCourses] = useState<Course[]>([])
+    const [courses, setYear] = useState<Course[]>([])
     const [loading, setLoading] = useState(true)
     const [showEnrollModal, setShowEnrollModal] = useState(false)
     const [enrollData, setEnrollData] = useState({
@@ -71,7 +71,7 @@ export default function UserProfilePage() {
 
                 // Fetch courses for enrollment dropdown
                 const coursesRes = await api.get('/admin/courses')
-                setCourses(coursesRes.data)
+                setYear(coursesRes.data)
             } catch (error) {
                 console.error(error)
                 router.push('/admin/users')
@@ -277,14 +277,14 @@ export default function UserProfilePage() {
                     </div>
                 )}
 
-                {/* Tutor Courses Section */}
+                {/* Tutor Year Section */}
                 {user.role === 'tutor' && (
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
                             <div className="p-6 border-b border-slate-100">
                                 <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
                                     <BookOpen size={20} className="text-slate-400" />
-                                    Courses Offered
+                                    Year Offered
                                 </h3>
                             </div>
                             <div className="overflow-x-auto">

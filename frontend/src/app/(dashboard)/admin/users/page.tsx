@@ -24,7 +24,7 @@ interface Course {
 
 export default function UserManagementPage() {
     const [users, setUsers] = useState<User[]>([])
-    const [courses, setCourses] = useState<Course[]>([])
+    const [courses, setYear] = useState<Course[]>([])
     const [loading, setLoading] = useState(true)
 
     // Modals
@@ -61,7 +61,7 @@ export default function UserManagementPage() {
     // -- Fetch --
     useEffect(() => {
         fetchUsers()
-        fetchCourses()
+        fetchYear()
     }, [])
 
     const fetchUsers = async () => {
@@ -75,10 +75,10 @@ export default function UserManagementPage() {
         }
     }
 
-    const fetchCourses = async () => {
+    const fetchYear = async () => {
         try {
             const res = await api.get('/admin/courses')
-            setCourses(res.data)
+            setYear(res.data)
         } catch (error) {
             console.error("Failed to fetch courses", error)
         }

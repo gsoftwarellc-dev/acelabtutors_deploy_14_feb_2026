@@ -41,7 +41,7 @@ export default function TeacherPerformancePage() {
                             <tr>
                                 <th className="px-6 py-3 font-medium text-left">Teacher</th>
                                 <th className="px-6 py-3 font-medium text-left">Email</th>
-                                <th className="px-6 py-3 font-medium text-center">Courses</th>
+                                <th className="px-6 py-3 font-medium text-center">Year</th>
                                 <th className="px-6 py-3 font-medium text-center">Students</th>
                                 <th className="px-6 py-3 font-medium text-center">Action</th>
                             </tr>

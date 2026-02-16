@@ -68,7 +68,7 @@ export default function TutorCourseDetailPage() {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const res = await fetch(`${apiUrl}/api/course-options`)
                 if (res.ok) {
                     const data = await res.json()
@@ -90,7 +90,7 @@ export default function TutorCourseDetailPage() {
         const fetchCourse = async () => {
             try {
                 const token = localStorage.getItem('token')
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                 const response = await fetch(`${apiUrl}/api/courses/${id}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -122,7 +122,7 @@ export default function TutorCourseDetailPage() {
             const fetchStudents = async () => {
                 try {
                     const token = localStorage.getItem('token')
-                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
                     const response = await fetch(`${apiUrl}/api/courses/${id}/students`, {
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -165,7 +165,7 @@ export default function TutorCourseDetailPage() {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/courses/${id}`, {
                 method: 'PUT',
                 headers: {
@@ -193,7 +193,7 @@ export default function TutorCourseDetailPage() {
     const deleteCourse = async () => {
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             await fetch(`${apiUrl}/api/courses/${id}`, {
                 method: 'DELETE',
                 headers: {
@@ -225,7 +225,7 @@ export default function TutorCourseDetailPage() {
         setIsSavingDetails(true)
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const res = await fetch(`${apiUrl}/api/courses/${id}`, {
                 method: 'PUT',
                 headers: {

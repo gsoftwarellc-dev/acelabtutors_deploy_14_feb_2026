@@ -67,7 +67,7 @@ export default function AttendanceHistoryPage() {
 
         try {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             const response = await fetch(
                 `${apiUrl}/api/admin/users/${searchId}/performance`,
                 {

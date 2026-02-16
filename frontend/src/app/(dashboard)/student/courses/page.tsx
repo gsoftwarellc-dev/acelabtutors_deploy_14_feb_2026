@@ -25,18 +25,18 @@ interface Course {
     subject?: string
 }
 
-export default function MyCoursesPage() {
+export default function MyYearPage() {
     const { user } = useAuth()
-    const [courses, setCourses] = useState<Course[]>([])
+    const [courses, setYear] = useState<Course[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [activeTab, setActiveTab] = useState<'enrolled' | 'completed'>('enrolled')
     const [searchQuery, setSearchQuery] = useState("")
 
     useEffect(() => {
-        const fetchCourses = async () => {
+        const fetchYear = async () => {
             try {
                 const token = localStorage.getItem('token')
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk';
 
                 const response = await fetch(`${apiUrl}/api/student/courses`, {
                     headers: {
@@ -46,7 +46,7 @@ export default function MyCoursesPage() {
 
                 if (response.ok) {
                     const data = await response.json()
-                    setCourses(data)
+                    setYear(data)
                 }
             } catch (error) {
                 console.error("Failed to fetch courses", error)
@@ -55,10 +55,10 @@ export default function MyCoursesPage() {
             }
         }
 
-        fetchCourses()
+        fetchYear()
     }, [])
 
-    const filteredCourses = courses.filter(course => {
+    const filteredYear = courses.filter(course => {
         const matchesSearch = course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             course.tutor.name.toLowerCase().includes(searchQuery.toLowerCase())
 
@@ -81,12 +81,12 @@ export default function MyCoursesPage() {
         <div className="space-y-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 mb-2">My Courses</h1>
+                    <h1 className="text-3xl font-bold text-slate-900 mb-2">My Year</h1>
                     <p className="text-slate-600">Manage and track your learning progress</p>
                 </div>
                 <Link href="/courses">
                     <Button>
-                        <BookOpen className="mr-2 h-4 w-4" /> Browse More Courses
+                        <BookOpen className="mr-2 h-4 w-4" /> Browse More Year
                     </Button>
                 </Link>
             </div>
@@ -101,7 +101,7 @@ export default function MyCoursesPage() {
                             : 'text-slate-600 hover:text-slate-900'
                             }`}
                     >
-                        Active Courses
+                        Active Year
                     </button>
                     <button
                         onClick={() => setActiveTab('completed')}
@@ -127,9 +127,9 @@ export default function MyCoursesPage() {
             </div>
 
             {/* Course Grid */}
-            {filteredCourses.length > 0 ? (
+            {filteredYear.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredCourses.map((course) => (
+                    {filteredYear.map((course) => (
                         <div key={course.id} className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                             <div className="h-40 bg-gradient-to-r from-blue-500 to-indigo-600 relative">
                                 {/* Badge removed */}
@@ -171,7 +171,7 @@ export default function MyCoursesPage() {
                     </p>
                     {activeTab === 'enrolled' && (
                         <Link href="/courses">
-                            <Button>Browse Courses</Button>
+                            <Button>Browse Year</Button>
                         </Link>
                     )}
                 </div>

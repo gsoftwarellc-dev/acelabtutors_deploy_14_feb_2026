@@ -23,13 +23,13 @@ export default function TutorDashboard() {
     }>>([
         { label: "Active Students", value: "0", trend: "neutral" },
         { label: "Total Enrollments", value: "0", trend: "neutral" },
-        { label: "Number of Courses", value: "0", trend: "neutral" },
+        { label: "Number of Year", value: "0", trend: "neutral" },
     ])
 
     useEffect(() => {
         const fetchStats = async () => {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             try {
                 const res = await fetch(`${apiUrl}/api/tutor/dashboard-stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -39,7 +39,7 @@ export default function TutorDashboard() {
                     setStats([
                         { label: "Active Students", value: data.active_students.toString(), trend: "up" as const },
                         { label: "Total Enrollments", value: data.total_enrollments.toString(), trend: "up" as const },
-                        { label: "Number of Courses", value: data.course_count.toString(), trend: "neutral" as const },
+                        { label: "Number of Year", value: data.course_count.toString(), trend: "neutral" as const },
                     ])
                 }
             } catch (error) {
@@ -54,7 +54,7 @@ export default function TutorDashboard() {
     useEffect(() => {
         const fetchUpcomingClasses = async () => {
             const token = localStorage.getItem('token')
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.acelabtutors.co.uk'
             try {
                 const res = await fetch(`${apiUrl}/api/tutor/upcoming-classes`, {
                     headers: { 'Authorization': `Bearer ${token}` }
